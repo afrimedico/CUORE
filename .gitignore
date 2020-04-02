@@ -1,5 +1,5 @@
-# lib/secret.dart
-# android/app/google-services.json
+lib/secret.dart
+android/app/google-services.json
 
 # Miscellaneous
 *.class
