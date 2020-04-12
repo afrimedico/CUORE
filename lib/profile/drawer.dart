@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ghala/profile/login.dart';
-import 'package:ghala/profile/signin.dart';
-import 'package:ghala/sl/message.dart';
+import 'package:cuore/profile/login.dart';
+import 'package:cuore/profile/signin.dart';
+import 'package:cuore/sl/message.dart';
 
 class AppDrawer {
   static Drawer showDrawer(context) {
@@ -22,7 +22,7 @@ class AppDrawer {
                       'assets/icons/ic_launcher.png',
                       width: 64,
                     ),
-                    applicationName: "Ghala",
+                    applicationName: "CUORE",
                     applicationVersion: "Test version",
                   )),
           Divider(),

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ghala/profile/app.dart';
+import 'package:cuore/profile/app.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 String userId = '0';

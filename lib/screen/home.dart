@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:ghala/repository/otc.dart';
-import 'package:ghala/screen/otclist.dart';
-import 'package:ghala/profile/drawer.dart';
-import 'package:ghala/profile/signin.dart';
-import 'package:ghala/secret.dart';
-import 'package:ghala/repository/sheet.dart';
+import 'package:cuore/repository/otc.dart';
+import 'package:cuore/screen/otclist.dart';
+import 'package:cuore/profile/drawer.dart';
+import 'package:cuore/profile/signin.dart';
+import 'package:cuore/secret.dart';
+import 'package:cuore/repository/sheet.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 

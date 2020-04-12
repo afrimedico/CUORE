@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:ghala/sl/prefs.dart';
+import 'package:cuore/sl/prefs.dart';
 import 'package:uuid/uuid.dart';
 
 class App {

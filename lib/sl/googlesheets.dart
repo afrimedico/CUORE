@@ -1,4 +1,4 @@
-import 'package:ghala/secret.dart';
+import 'package:cuore/secret.dart';
 import 'package:googleapis/sheets/v4.dart';
 import 'package:googleapis_auth/auth_io.dart';
 

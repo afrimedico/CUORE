@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ghala/repository/otc.dart';
-import 'package:ghala/screen/otclist.dart';
-import 'package:ghala/screen/ringup.dart';
+import 'package:cuore/repository/otc.dart';
+import 'package:cuore/screen/otclist.dart';
+import 'package:cuore/screen/ringup.dart';
 
 class Parts {
   static final Parts _instance = Parts._internal();

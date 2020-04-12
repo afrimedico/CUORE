@@ -1,6 +1,6 @@
-import 'package:ghala/profile/app.dart';
-import 'package:ghala/screen/home.dart';
-import 'package:ghala/profile/signin.dart';
+import 'package:cuore/profile/app.dart';
+import 'package:cuore/screen/home.dart';
+import 'package:cuore/profile/signin.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {

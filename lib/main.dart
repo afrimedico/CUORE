@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:ghala/profile/login.dart';
-import 'package:ghala/sl/message.dart';
+import 'package:cuore/profile/login.dart';
+import 'package:cuore/sl/message.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ghala',
+      title: 'CUORE',
       theme: new ThemeData(
           // primaryColor: new Color(0xff075E54),
           accentColor: new Color(0xff25D366),
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           textTheme:
               TextTheme(title: TextStyle(color: Colors.black, fontSize: 16))),
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'Ghala'),
+      home: MyHomePage(title: 'CUORE'),
     );
   }
 }

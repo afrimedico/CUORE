@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:ghala/repository/otc.dart';
-import 'package:ghala/screen/components/parts.dart';
-import 'package:ghala/screen/home.dart';
-import 'package:ghala/screen/otc.dart';
-import 'package:ghala/screen/ringup.dart';
+import 'package:cuore/repository/otc.dart';
+import 'package:cuore/screen/components/parts.dart';
+import 'package:cuore/screen/home.dart';
+import 'package:cuore/screen/otc.dart';
+import 'package:cuore/screen/ringup.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 

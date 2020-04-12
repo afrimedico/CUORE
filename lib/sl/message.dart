@@ -1,4 +1,4 @@
-import 'package:ghala/sl/asset.dart';
+import 'package:cuore/sl/asset.dart';
 import 'package:flutter/material.dart';
 
 class SLMessageDelegate extends LocalizationsDelegate {
