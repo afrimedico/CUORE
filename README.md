@@ -22,3 +22,8 @@ It is a mobile app that manages the OKIGUSURI.
 ----
 Powered by AfriMedico
 https://afrimedico.org/
+
+
+## Additional Info
+Japanese Only :
+https://afrimedico-my.sharepoint.com/:o:/r/personal/afrimedico_afrimedico_org/_layouts/15/Doc.aspx?sourcedoc=%7Bd74d7885-d4d8-42fd-a67e-84649a4170f9%7D&action=editnew&cid=9e0d69d8-04dc-4f5b-9f73-e7ca98b9a71c
