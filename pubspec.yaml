@@ -38,6 +38,7 @@ dependencies:
   uuid: any
   provider: ^3.1.0+1
   pimp_my_button:
+  sms: ^0.2.0
 
 dev_dependencies:
   flutter_test:

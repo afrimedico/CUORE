@@ -1,8 +1,11 @@
+import 'package:cuore/profile/app.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:sms/sms.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
@@ -339,7 +342,7 @@ class _RingupState extends State<RingupScreen>
             child: RaisedButton(
               onPressed: () async {
                 if (collection >= 0) {
-                  _handleDone();
+                  await _handleDone();
                 }
               },
               color: (collection >= 0) ? Colors.blue : Colors.white,
@@ -370,9 +373,7 @@ class _RingupState extends State<RingupScreen>
     );
   }
 
-  void _handleDone() {
-
-    
+  Future _handleDone() async {
     // baseがあるのにcountが0ならcaution
     var caution = false;
     var count = false;
@@ -416,11 +417,62 @@ class _RingupState extends State<RingupScreen>
     // 次回請求額
     customer.debt = claim - collection;
 
-    collection = 0;
-
     // 更新日時
     customer.updated = DateTime.now().toUtc();
 
+    var text = await getSmsText(customer, _otcList, collection);
+    print(text);
+
+    collection = 0;
+
+    // SMS送信
+    // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
+    var address = "+1 717 727-2636";
+    sendSms(address, text);
+
     Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  void sendSms(String address, String text) {
+    SmsSender sender = new SmsSender();
+    SmsMessage message = new SmsMessage(address, text);
+    message.onStateChanged.listen((state) {
+      if (state == SmsMessageState.Sent) {
+        print("SMS is sent!");
+      } else if (state == SmsMessageState.Delivered) {
+        print("SMS is delivered!");
+      }
+    });
+    sender.sendSms(message);
+  }
+
+  Future<String> getSmsText(customer, _otcList, collection) async {
+    // 送信者
+    var user = await App.getProfile();
+    var text = '@' + user['name'] + ',';
+    // 顧客名
+    text += 'N' + customer.name + ',';
+    // 日付
+    text += 'T' + date(customer) + ',';
+    // 今回徴収額
+    text += 'M' + collection.toString() + ',';
+    // 負債
+    text += 'D' + customer.debt.toString() + ',';
+    for (var i = 0; i < _otcList.length; i++) {
+      if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
+        // 薬ID
+        text += 'K' + _otcList[i].code + ',';
+        // 今回使った個数
+        text += 'U' + _otcList[i].preuse.toString() + ',';
+        // 今回追加した個数
+        text += 'A' + _otcList[i].preadd.toString() + ',';
+      }
+    }
+    return text;
+  }
+
+  String date(customer) {
+    final _formatter = DateFormat("MM/dd HH:mm");
+    return _formatter.format(customer.updated.toLocal());
   }
 }
