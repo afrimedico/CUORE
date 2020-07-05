@@ -9,7 +9,8 @@ import 'package:sms/sms.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
-  RingupScreen({this.customer});
+  RingupScreen({this.customer, this.callback});
+  Function(String) callback;
 
   CustomerData customer;
 
@@ -420,6 +421,9 @@ class _RingupState extends State<RingupScreen>
     // 更新日時
     customer.updated = DateTime.now().toUtc();
 
+    // セーブ
+    widget.callback("save");
+
     var text = await getSmsText(customer, _otcList, collection);
     print(text);
 
@@ -428,7 +432,7 @@ class _RingupState extends State<RingupScreen>
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
     var address = "+1 717 727-2636";
-    sendSms(address, text);
+    // sendSms(address, text);
 
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
@@ -441,6 +445,15 @@ class _RingupState extends State<RingupScreen>
         print("SMS is sent!");
       } else if (state == SmsMessageState.Delivered) {
         print("SMS is delivered!");
+      } else if (state == SmsMessageState.Fail) {
+        print("SMS is Fail!");
+      } else if (state == SmsMessageState.None) {
+        print("SMS is None!");
+      } else if (state == SmsMessageState.Sending) {
+        print("SMS is Sending!");
+      } else {
+        // unknown
+        print("SMS is unknown!");
       }
     });
     sender.sendSms(message);

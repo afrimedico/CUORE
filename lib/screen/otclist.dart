@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:barcode_scan/barcode_scan.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/components/parts.dart';
@@ -13,7 +13,8 @@ import 'package:image_picker/image_picker.dart';
 
 /// Show Otc list which customer has.
 class OtcListScreen extends StatefulWidget {
-  OtcListScreen({this.customer});
+  OtcListScreen({this.customer, this.callback});
+  Function(String) callback;
 
   CustomerData customer;
 
@@ -130,7 +131,7 @@ class OtcListState extends State<OtcListScreen>
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => new OtcListScreen2(customer: customer)));
+              builder: (context) => new OtcListScreen2(customer: customer, callback: widget.callback)));
     }
     setState(() {
       loading = false;
@@ -141,7 +142,7 @@ class OtcListState extends State<OtcListScreen>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => new RingupScreen(customer: customer)));
+            builder: (context) => new RingupScreen(customer: customer, callback: widget.callback)));
   }
 
   _onBack() {

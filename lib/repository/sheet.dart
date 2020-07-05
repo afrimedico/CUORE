@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
@@ -37,18 +38,17 @@ class CustomerDb {
         ];
       }
     }
-    print(sheet);
-    await Sheets.save(sheetId, sheet);
+    await Sheets.save(sheetId, sheet, 'customers');
   }
 
   // 購入記録をロードする
-  static Future<List<CustomerData>> loadFromSheets(String staffname, Map<String, ItemData> items) async {
+  static Future<List<CustomerData>> loadFromSheets(
+      String staffname, Map<String, ItemData> items) async {
     var range = staffname + '!A1:I1000';
-    sheet = await Sheets.load(sheetId, range);
+    sheet = await Sheets.load(sheetId, range, 'customers');
     if (sheet == null) {
       return null;
     }
-    print(sheet.values.last);
 
     List<CustomerData> result = List<CustomerData>();
     int n = 0;
@@ -76,9 +76,9 @@ class CustomerDb {
         if (key == 'updated') {
           user.updated = DateTime.parse(value);
         } else if (key == 'sale') {
-          user.sale = int.parse(value);
+          user.sale = value;
         } else if (key == 'debt') {
-          user.debt = int.parse(value);
+          user.debt = value;
         } else if (key == 'box') {
           user.box = value;
         } else {
@@ -94,11 +94,11 @@ class CustomerDb {
               name: item.name,
               code: item.code,
               price: item.price,
-              base: int.parse(count),
-              preuse: int.parse(use),
-              preadd: int.parse(add),
-              useall: int.parse(useall),
-              addall: int.parse(addall));
+              base: count,
+              preuse: use,
+              preadd: add,
+              useall: useall,
+              addall: addall);
           user.otcList.add(otc);
         }
       } catch (e) {
@@ -113,8 +113,7 @@ class CustomerDb {
   // アイテムリストをロードする
   static Future<Map<String, ItemData>> loadItemFromSheets() async {
     var range = 'item!A1:I1000';
-    sheet = await Sheets.load(sheetId, range);
-    print(sheet.values.last);
+    sheet = await Sheets.load(sheetId, range, 'items');
 
     Map<String, ItemData> result = Map<String, ItemData>();
     int n = 0;

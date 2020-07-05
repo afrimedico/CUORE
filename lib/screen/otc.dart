@@ -7,7 +7,8 @@ import 'package:cuore/screen/ringup.dart';
 
 /// Show Otc count.
 class OtcScreen extends StatefulWidget {
-  OtcScreen({this.state, this.otc});
+  OtcScreen({this.state, this.otc, this.callback});
+  Function(String) callback;
 
   OtcListState state;
   OtcData otc;
@@ -87,7 +88,7 @@ class _OtcState extends State<OtcScreen> with SingleTickerProviderStateMixin {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                new RingupScreen(customer: this.state.customer)));
+                new RingupScreen(customer: this.state.customer, callback: widget.callback)));
   }
 
   _onBack() {
