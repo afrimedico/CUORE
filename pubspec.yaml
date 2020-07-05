@@ -29,16 +29,17 @@ dependencies:
   flutter_launcher_icons: 
   googleapis: any
   googleapis_auth: any
-  barcode_scan:
+  # barcode_scan:
   image_picker:
   shared_preferences: any
   csv: any
-  firebase_auth: any
   google_sign_in: any
   uuid: any
   provider: ^3.1.0+1
   pimp_my_button:
-  sms: ^0.2.0
+  firebase_auth: any
+  sms: ^0.2.4
+  path_provider:
 
 dev_dependencies:
   flutter_test:

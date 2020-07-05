@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:barcode_scan/barcode_scan.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
@@ -28,6 +28,14 @@ class CustomerData {
   int debt;
   DateTime updated;
   String box;
+
+  void log() {
+    print(name);
+    print(sale);
+    print(debt);
+    print(updated);
+    print(box);
+  }
 }
 
 class _WhatsAppHomeState extends State<HomeScreen>
@@ -60,6 +68,10 @@ class _WhatsAppHomeState extends State<HomeScreen>
       await CustomerDb.saveAsSheets(_customerList);
       await reload();
     }
+  }
+
+  void callback(String event) {
+    save();
   }
 
   @override
@@ -109,29 +121,29 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
 // Method for scanning barcode....
   Future barcodeScanning() async {
-    setState(() {
-      loading = true;
-    });
-    this.barcode = "";
-    try {
-      String barcode = await BarcodeScanner.scan();
-      _setBarcode(barcode);
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this.message = 'No camera permission!';
-        });
-      } else {
-        setState(() => this.message = 'Unknown error: $e');
-      }
-    } on FormatException {
-      setState(() => this.message = 'Nothing captured.');
-    } catch (e) {
-      setState(() => this.message = 'Unknown error: $e');
-    }
-    setState(() {
-      loading = false;
-    });
+    //   setState(() {
+    //     loading = true;
+    //   });
+    //   this.barcode = "";
+    //   try {
+    //     String barcode = await BarcodeScanner.scan();
+    //     _setBarcode(barcode);
+    //   } on PlatformException catch (e) {
+    //     if (e.code == BarcodeScanner.CameraAccessDenied) {
+    //       setState(() {
+    //         this.message = 'No camera permission!';
+    //       });
+    //     } else {
+    //       setState(() => this.message = 'Unknown error: $e');
+    //     }
+    //   } on FormatException {
+    //     setState(() => this.message = 'Nothing captured.');
+    //   } catch (e) {
+    //     setState(() => this.message = 'Unknown error: $e');
+    //   }
+    //   setState(() {
+    //     loading = false;
+    //   });
   }
 
   _setBarcode(barcode) {
@@ -196,6 +208,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   Widget _buildCustomerItem(int i) {
     var customer = _customerList[i];
+    print("customer");
+    customer.log();
     return Padding(
       padding: new EdgeInsets.all(4.0),
       child: new Container(
@@ -249,7 +263,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                new OtcListScreen(customer: _customerList[index])));
+            builder: (context) => new OtcListScreen(
+                customer: _customerList[index], callback: callback)));
   }
 }
