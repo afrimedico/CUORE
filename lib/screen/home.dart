@@ -54,8 +54,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
   // Google sheetからデータをロード
   Future reload() async {
     print(userEmail);
-    var items = await CustomerDb.loadItemFromSheets();
-    var list = await CustomerDb.loadFromSheets(userEmail, items);
+    var items = await CustomerDb.loadItemFromSheets(false);
+    var list = await CustomerDb.loadFromSheets(userEmail, items, false);
 
     setState(() {
       _customerList = list;
@@ -68,6 +68,14 @@ class _WhatsAppHomeState extends State<HomeScreen>
       await CustomerDb.saveAsSheets(_customerList);
       await reload();
     }
+  }
+
+  /// 
+  Future reloadAndSave() async {
+    print(userEmail);
+    var items = await CustomerDb.loadItemFromSheets(true);
+    var list = await CustomerDb.loadFromSheets(userEmail, items, true);
+    await CustomerDb.saveAsSheets(list);
   }
 
   void callback(String event) {
@@ -170,9 +178,9 @@ class _WhatsAppHomeState extends State<HomeScreen>
         IconButton(
           icon: Icon(Icons.cached),
           onPressed: () {
-            final snackBar = SnackBar(content: Text('Uploading...'));
+            final snackBar = SnackBar(content: Text('Reloading...'));
             _scaffoldKey.currentState.showSnackBar(snackBar);
-            save();
+            reloadAndSave();
           },
         ),
       ],

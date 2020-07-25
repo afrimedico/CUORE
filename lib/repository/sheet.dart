@@ -43,9 +43,9 @@ class CustomerDb {
 
   // 購入記録をロードする
   static Future<List<CustomerData>> loadFromSheets(
-      String staffname, Map<String, ItemData> items) async {
+      String staffname, Map<String, ItemData> items, bool fromServer) async {
     var range = staffname + '!A1:I1000';
-    sheet = await Sheets.load(sheetId, range, 'customers');
+    sheet = await Sheets.load(sheetId, range, 'customers', fromServer);
     if (sheet == null) {
       return null;
     }
@@ -111,9 +111,9 @@ class CustomerDb {
   }
 
   // アイテムリストをロードする
-  static Future<Map<String, ItemData>> loadItemFromSheets() async {
+  static Future<Map<String, ItemData>> loadItemFromSheets(bool fromServer) async {
     var range = 'item!A1:I1000';
-    sheet = await Sheets.load(sheetId, range, 'items');
+    sheet = await Sheets.load(sheetId, range, 'items', fromServer);
 
     Map<String, ItemData> result = Map<String, ItemData>();
     int n = 0;

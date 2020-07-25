@@ -1,0 +1,66 @@
+{
+    "majorDimension": "ROWS",
+    "range": "item!A1:I1000",
+    "values": [
+        [
+            "key",
+            "name",
+            "code",
+            "price"
+        ],
+        [
+            "1_painkiller_elephant",
+            "zutuuyaku",
+            "4549980139073",
+            "4000"
+        ],
+        [
+            "2_Anti-worms_snake",
+            "ichouyaku",
+            "4549980139071",
+            "3000"
+        ],
+        [
+            "3_Anti-malarial_Mosquito",
+            "kazegusuri",
+            "4549980139072",
+            "2000"
+        ],
+        [
+            "4_Anti-fungal_Goat",
+            "nurigusuri",
+            "4549980139074",
+            "1000"
+        ],
+        [
+            "5_wounds_Cow",
+            "supurei",
+            "4549980139074",
+            "1000"
+        ],
+        [
+            "6_cough_Giraffe",
+            "sippu",
+            "4549980139074",
+            "1000"
+        ],
+        [
+            "7_allergy_Cat",
+            "bannsoukou",
+            "4549980139074",
+            "1000"
+        ],
+        [
+            "8_ORS_Zebra",
+            "mararia",
+            "4549980139074",
+            "1000"
+        ],
+        [
+            "9_flue_Antelope",
+            "mararia2",
+            "4549980139074",
+            "1000"
+        ]
+    ]
+}

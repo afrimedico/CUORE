@@ -187,7 +187,7 @@ class Parts {
     );
   }
 
-  buildBottomButton3(context, onDone) {
+  buildBottomButton3(context, onDone, stage) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
@@ -206,14 +206,14 @@ class Parts {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.camera_alt,
+                      Icons.arrow_forward,
                       color: Colors.white,
                     ),
                     SizedBox(
                       width: 4.0,
                     ),
                     Text(
-                      "Scan AMORE",
+                      stage == 0 ? "Add" : "Collect",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -238,5 +238,18 @@ class Parts {
   // 送信したテキストでシナリオを実行する
   void handleSubmitted2(otc, String text) {
     otc.add = int.parse(text);
+  }
+
+  Widget renderIconButton(icon, onPressed) {
+    return Ink(
+      decoration: const BoxDecoration(
+        color: Colors.green,
+      ),
+      child: IconButton(
+        icon: Icon(icon),
+        color: Colors.white,
+        onPressed: onPressed,
+      ),
+    );
   }
 }

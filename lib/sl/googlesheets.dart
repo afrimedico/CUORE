@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 import 'package:cuore/secret.dart';
 import 'package:googleapis/sheets/v4.dart';
@@ -7,15 +8,28 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Sheets {
-  static Future<Map<String, dynamic>> load(sheetId, range, name) async {
-    final file = await getFilePath(name);
-    if (await file.exists()) {
-      var result = await file.readAsString();
-      if (result != null && result.length > 0) {
-        print("ファイルからロード");
-        print(file.uri);
-        print(json.decode(result));
-        return json.decode(result);
+  static Future<Map<String, dynamic>> load(
+      sheetId, range, String name, bool fromServer) async {
+    if (!fromServer) {
+      if (name == "items") {
+        print("Assetからロード");
+        var result =
+            await rootBundle.loadString("assets/data/" + name + ".json");
+        if (result != null && result.length > 0) {
+          print(json.decode(result));
+          return json.decode(result);
+        }
+      }
+
+      final file = await getFilePath(name);
+      if (await file.exists()) {
+        var result = await file.readAsString();
+        if (result != null && result.length > 0) {
+          print("ファイルからロード");
+          print(file.uri);
+          print(json.decode(result));
+          return json.decode(result);
+        }
       }
     }
 
