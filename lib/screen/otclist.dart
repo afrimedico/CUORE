@@ -114,24 +114,34 @@ class OtcListState extends State<OtcListScreen>
       ),
       new Divider(height: 1.0),
       // Parts().buildBottomButton(context, barcodeScanning),
-      Parts().buildBottomButton3(context, _handleCamera)
+      Parts().buildBottomButton3(context, _handleCamera, 0)
     ]);
   }
 
   bool loading = false;
+  bool useCamera = false;
 
   _handleCamera() async {
     setState(() {
       loading = true;
     });
-    // 撮影/選択したFileが返ってくる
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-    // Androidで撮影せずに閉じた場合はnullになる
-    if (imageFile != null) {
+    if (useCamera) {
+      // 撮影/選択したFileが返ってくる
+      var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+      // Androidで撮影せずに閉じた場合はnullになる
+      if (imageFile != null) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => new OtcListScreen2(
+                    customer: customer, callback: widget.callback)));
+      }
+    } else {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => new OtcListScreen2(customer: customer, callback: widget.callback)));
+              builder: (context) => new OtcListScreen2(
+                  customer: customer, callback: widget.callback)));
     }
     setState(() {
       loading = false;
@@ -142,7 +152,8 @@ class OtcListState extends State<OtcListScreen>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => new RingupScreen(customer: customer, callback: widget.callback)));
+            builder: (context) => new RingupScreen(
+                customer: customer, callback: widget.callback)));
   }
 
   _onBack() {
@@ -181,10 +192,6 @@ class OtcListState extends State<OtcListScreen>
                   children: <Widget>[
                     new Flexible(
                       flex: 1,
-                      child: Text(otc.base.toString()),
-                    ),
-                    new Flexible(
-                      flex: 1,
                       child: CircleAvatar(
                         backgroundImage: Image.asset(
                                 "assets/animals/" + otc.key + ".png",
@@ -204,6 +211,10 @@ class OtcListState extends State<OtcListScreen>
                     ),
                     new Flexible(
                       flex: 1,
+                      child: Text(otc.base.toString() + "→"),
+                    ),
+                    new Flexible(
+                      flex: 1,
                       child: new Text(
                         otc.count.toString(),
                         style: new TextStyle(
@@ -213,45 +224,19 @@ class OtcListState extends State<OtcListScreen>
                     new Flexible(
                       flex: 1,
                       child: SizedBox(
-                        height: 60,
-                        child: RaisedButton.icon(
-                          icon: Icon(
-                            Icons.remove,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            "1",
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24.0),
-                          ),
-                          onPressed: () {
-                            _remove(otc);
-                          },
-                          color: Colors.lightGreen,
-                          textColor: Colors.white,
-                        ),
+                        height: 50,
+                        child: Parts().renderIconButton(Icons.remove, () {
+                          _remove(otc);
+                        }),
                       ),
                     ),
                     new Flexible(
                       flex: 1,
                       child: SizedBox(
-                        height: 60,
-                        child: RaisedButton.icon(
-                          icon: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            "1",
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24.0),
-                          ),
-                          onPressed: () {
-                            _add(otc);
-                          },
-                          color: Colors.green,
-                          textColor: Colors.white,
-                        ),
+                        height: 50,
+                        child: Parts().renderIconButton(Icons.add, () {
+                          _add(otc);
+                        }),
                       ),
                     ),
                   ],

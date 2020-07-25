@@ -113,24 +113,34 @@ class OtcListState2 extends State<OtcListScreen2>
       ),
       new Divider(height: 1.0),
       // Parts().buildBottomButton(context, barcodeScanning),
-      Parts().buildBottomButton3(context, _handleCamera)
+      Parts().buildBottomButton3(context, _handleCamera, 1)
     ]);
   }
 
   bool loading = false;
+  bool useCamera = false;
 
   _handleCamera() async {
     setState(() {
       loading = true;
     });
-    // 撮影/選択したFileが返ってくる
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-    // Androidで撮影せずに閉じた場合はnullになる
-    if (imageFile != null) {
+    if (useCamera) {
+      // 撮影/選択したFileが返ってくる
+      var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+      // Androidで撮影せずに閉じた場合はnullになる
+      if (imageFile != null) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => new RingupScreen(
+                    customer: customer, callback: widget.callback)));
+      }
+    } else {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => new RingupScreen(customer: customer, callback: widget.callback)));
+              builder: (context) => new RingupScreen(
+                  customer: customer, callback: widget.callback)));
     }
     setState(() {
       loading = false;
@@ -141,7 +151,8 @@ class OtcListState2 extends State<OtcListScreen2>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => new RingupScreen(customer: customer, callback: widget.callback)));
+            builder: (context) => new RingupScreen(
+                customer: customer, callback: widget.callback)));
   }
 
   _onBack() {
@@ -178,10 +189,6 @@ class OtcListState2 extends State<OtcListScreen2>
                   children: <Widget>[
                     new Flexible(
                       flex: 1,
-                      child: Text("+" + otc.add.toString()),
-                    ),
-                    new Flexible(
-                      flex: 1,
                       child: CircleAvatar(
                         backgroundImage: Image.asset(
                                 "assets/animals/" + otc.key + ".png",
@@ -207,54 +214,76 @@ class OtcListState2 extends State<OtcListScreen2>
                             fontWeight: FontWeight.bold, fontSize: 28.0),
                       ),
                     ),
+                    new Flexible(
+                      flex: 1,
+                      child: Text("+" + otc.add.toString()),
+                    ),
                     // new Text(
                     //   'add: ' + otc.add.toString(),
                     //   style: new TextStyle(color: Colors.black, fontSize: 16.0),
                     // ),
+                    // new Flexible(
+                    //   flex: 1,
+                    //   child: SizedBox(
+                    //     width: 80, // specific value
+                    //     height: 60,
+                    //     child: RaisedButton.icon(
+                    //       icon: Icon(
+                    //         Icons.remove,
+                    //         color: Colors.white,
+                    //       ),
+                    //       label: Text(
+                    //         "1",
+                    //         style: new TextStyle(
+                    //             fontWeight: FontWeight.bold, fontSize: 24.0),
+                    //       ),
+                    //       onPressed: () {
+                    //         _remove(otc);
+                    //       },
+                    //       color: Colors.lightGreen,
+                    //       textColor: Colors.white,
+                    //     ),
+                    //   ),
+                    // ),
+                    // new Flexible(
+                    //   flex: 1,
+                    //   child: SizedBox(
+                    //     width: 80, // specific value
+                    //     height: 60,
+                    //     child: RaisedButton.icon(
+                    //       icon: Icon(
+                    //         Icons.add,
+                    //         color: Colors.white,
+                    //       ),
+                    //       label: Text(
+                    //         "1",
+                    //         style: new TextStyle(
+                    //             fontWeight: FontWeight.bold, fontSize: 24.0),
+                    //       ),
+                    //       onPressed: () {
+                    //         _add(otc);
+                    //       },
+                    //       color: Colors.green,
+                    //       textColor: Colors.white,
+                    //     ),
+                    //   ),
+                    // ),
                     new Flexible(
                       flex: 1,
                       child: SizedBox(
-                        width: 80, // specific value
-                        height: 60,
-                        child: RaisedButton.icon(
-                          icon: Icon(
-                            Icons.remove,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            "1",
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24.0),
-                          ),
-                          onPressed: () {
-                            _remove(otc);
-                          },
-                          color: Colors.lightGreen,
-                          textColor: Colors.white,
-                        ),
+                        height: 50,
+                        child: Parts().renderIconButton(Icons.remove, () {
+                          _remove(otc);
+                        }),
                       ),
                     ),
                     new Flexible(
                       flex: 1,
                       child: SizedBox(
-                        width: 80, // specific value
-                        height: 60,
-                        child: RaisedButton.icon(
-                          icon: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            "1",
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24.0),
-                          ),
-                          onPressed: () {
-                            _add(otc);
-                          },
-                          color: Colors.green,
-                          textColor: Colors.white,
-                        ),
+                        height: 50,
+                        child: Parts().renderIconButton(Icons.add, () {
+                          _add(otc);
+                        }),
                       ),
                     ),
                   ],
