@@ -6,6 +6,7 @@ import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:sms/sms.dart';
+import 'package:http/http.dart' as http;
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
@@ -425,16 +426,26 @@ class _RingupState extends State<RingupScreen>
     widget.callback("save");
 
     var text = await getSmsText(customer, _otcList, collection);
-    print(text);
 
     collection = 0;
 
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
-    var address = "+1 717 727-2636";
-    // sendSms(address, text);
+    sendMessage(text);
 
     Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  void sendMessage(String text) async {
+    print(text);
+
+    var url =
+        'https://us-central1-cuore-d27d5.cloudfunctions.net/outputTextMsgToDB';
+    final response = await http.post(url, body: text);
+    if (response.statusCode != 200) {
+      var address = "+1 717 727-2636";
+      // sendSms(address, text);
+    }
   }
 
   void sendSms(String address, String text) {
