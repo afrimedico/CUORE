@@ -10,57 +10,57 @@
         ],
         [
             "1_painkiller_elephant",
-            "zutuuyaku",
+            "PARACETAMOL syrup",
             "4549980139073",
-            "4000"
+            "2500"
         ],
         [
             "2_Anti-worms_snake",
-            "ichouyaku",
+            "ALBENDAZOLE tab",
             "4549980139071",
-            "3000"
-        ],
-        [
-            "3_Anti-malarial_Mosquito",
-            "kazegusuri",
-            "4549980139072",
-            "2000"
-        ],
-        [
-            "4_Anti-fungal_Goat",
-            "nurigusuri",
-            "4549980139074",
             "1000"
         ],
         [
+            "3_Anti-malarial_Mosquito",
+            "ARH-L tab(ADULT)",
+            "4549980139072",
+            "3000"
+        ],
+        [
+            "4_Anti-fungal_Goat",
+            "CLOTRIMAZOLE gel",
+            "4549980139074",
+            "2500"
+        ],
+        [
             "5_wounds_Cow",
-            "supurei",
+            "BANDAGE",
             "4549980139074",
             "1000"
         ],
         [
             "6_cough_Giraffe",
-            "sippu",
+            "MUCOLYN PEDIATRIC(B)",
             "4549980139074",
-            "1000"
+            "3000"
         ],
         [
             "7_allergy_Cat",
-            "bannsoukou",
+            "CHLORPHENIRAMINE MALEATE tab(1pack=10tablet)",
             "4549980139074",
-            "1000"
+            "300"
         ],
         [
             "8_ORS_Zebra",
-            "mararia",
+            "ORS",
             "4549980139074",
             "1000"
         ],
         [
             "9_flue_Antelope",
-            "mararia2",
+            "CLOTRIMAZOLE gel",
             "4549980139074",
-            "1000"
+            "2500"
         ]
     ]
 }
