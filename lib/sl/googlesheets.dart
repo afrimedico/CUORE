@@ -10,51 +10,48 @@ import 'package:path_provider/path_provider.dart';
 class Sheets {
   static Future<Map<String, dynamic>> load(
       sheetId, range, String name, bool fromServer) async {
-    if (!fromServer) {
-      if (name == "items") {
-        print("Assetからロード");
-        var result =
-            await rootBundle.loadString("assets/data/" + name + ".json");
-        if (result != null && result.length > 0) {
-          print(json.decode(result));
-          return json.decode(result);
-        }
-      }
-
-      final file = await getFilePath(name);
-      if (await file.exists()) {
-        var result = await file.readAsString();
-        if (result != null && result.length > 0) {
-          print("ファイルからロード");
-          print(file.uri);
-          print(json.decode(result));
-          return json.decode(result);
-        }
+    if (name == "items") {
+      print("Assetからロード");
+      var result = await rootBundle.loadString("assets/data/" + name + ".json");
+      if (result != null && result.length > 0) {
+        print(json.decode(result));
+        return json.decode(result);
       }
     }
 
-    print("GSheetからロードしてセーブ");
-
-    final _credentials =
-        new ServiceAccountCredentials.fromJson(Secret.serviceAccountKey);
-    const _SCOPES = const [SheetsApi.SpreadsheetsScope];
-
-    var client = await clientViaServiceAccount(_credentials, _SCOPES);
-    var api = new SheetsApi(client);
-
-    try {
-      var sheet = await api.spreadsheets.values.get(sheetId, range);
-      var data = sheet.toJson();
-
-      getFilePath(name).then((File file) {
-        file.writeAsString(json.encode(data));
-      });
-
-      print(data);
-      return data;
-    } catch (e) {
-      return null;
+    final file = await getFilePath(name);
+    if (await file.exists()) {
+      var result = await file.readAsString();
+      if (result != null && result.length > 0) {
+        print("ファイルからロード");
+        print(file.uri);
+        print(json.decode(result));
+        return json.decode(result);
+      }
     }
+
+    // print("GSheetからロードしてセーブ");
+
+    // final _credentials =
+    //     new ServiceAccountCredentials.fromJson(Secret.serviceAccountKey);
+    // const _SCOPES = const [SheetsApi.SpreadsheetsScope];
+
+    // var client = await clientViaServiceAccount(_credentials, _SCOPES);
+    // var api = new SheetsApi(client);
+
+    // try {
+    //   var sheet = await api.spreadsheets.values.get(sheetId, range);
+    //   var data = sheet.toJson();
+
+    //   getFilePath(name).then((File file) {
+    //     file.writeAsString(json.encode(data));
+    //   });
+
+    //   print(data);
+    //   return data;
+    // } catch (e) {
+    //   return null;
+    // }
   }
 
   static Future<void> save(sheetId, sheet, name) async {
