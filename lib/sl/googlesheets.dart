@@ -10,15 +10,6 @@ import 'package:path_provider/path_provider.dart';
 class Sheets {
   static Future<Map<String, dynamic>> load(
       sheetId, range, String name, bool fromServer) async {
-    if (name == "items") {
-      print("Assetからロード");
-      var result = await rootBundle.loadString("assets/data/" + name + ".json");
-      if (result != null && result.length > 0) {
-        print(json.decode(result));
-        return json.decode(result);
-      }
-    }
-
     final file = await getFilePath(name);
     if (await file.exists()) {
       var result = await file.readAsString();
@@ -28,6 +19,13 @@ class Sheets {
         print(json.decode(result));
         return json.decode(result);
       }
+    }
+
+    print("Assetからロード");
+    var result = await rootBundle.loadString("assets/data/" + name + ".json");
+    if (result != null && result.length > 0) {
+      print(json.decode(result));
+      return json.decode(result);
     }
 
     // print("GSheetからロードしてセーブ");
