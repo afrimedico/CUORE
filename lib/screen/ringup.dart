@@ -440,8 +440,7 @@ class _RingupState extends State<RingupScreen>
     print(text);
 
     var url =
-        // 'https://us-central1-cuore-d27d5.cloudfunctions.net/outputTextMsgToDB';
-        'https://afrimedico-cuore.azurewebsites.net/api/SmsTrigger?code=0Edkqsq6691N5eaUX1GaEWTEAFuKbNJt90eCjV7vIDqJDrjqgB3KwQ==';
+        'https://am-cuore.azurewebsites.net/api/SmsTrigger?code=gDMkIbCsRlrWlABD5t4OMuG5C/G4AquAh1WSTWUaj7NrDanHSdrnBw==';
     final response = await http.post(url, body: text);
     print(url);
     print(response.statusCode);
