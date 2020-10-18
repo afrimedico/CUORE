@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:cuore/profile/drawer.dart';
-import 'package:cuore/profile/signin.dart';
 import 'package:cuore/secret.dart';
 import 'package:cuore/repository/sheet.dart';
 import 'package:intl/intl.dart';
@@ -53,9 +52,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   // Google sheetからデータをロード
   Future reload() async {
-    print(userEmail);
     var items = await CustomerDb.loadItemFromSheets(false);
-    var list = await CustomerDb.loadFromSheets(userEmail, items, false);
+    var list = await CustomerDb.loadFromSheets(AppDrawer.userName, items, false);
 
     setState(() {
       _customerList = list;
@@ -72,9 +70,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   /// 
   Future reloadAndSave() async {
-    print(userEmail);
     var items = await CustomerDb.loadItemFromSheets(true);
-    var list = await CustomerDb.loadFromSheets(userEmail, items, true);
+    var list = await CustomerDb.loadFromSheets(AppDrawer.userName, items, true);
     await CustomerDb.saveAsSheets(list);
   }
 
@@ -171,7 +168,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
       title: new GestureDetector(
         onTap: () {},
         child: Center(
-          child: Text("Customers"),
+          child: Text(AppDrawer.userName),
         ),
       ),
       actions: <Widget>[
@@ -193,7 +190,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
       return Text("Processing...");
     }
     if (_customerList == null) {
-      return Text('No user data: ' + userName);
+      return Text('No user data: ' + AppDrawer.userName);
     }
     int len = _customerList != null ? _customerList.length : 0;
     return new Column(children: <Widget>[
