@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
-import 'package:cuore/secret.dart';
 import 'package:cuore/sl/googlesheets.dart';
 
 /// ユーザーリストを保持する
 /// このリストを選択して、ユーザーごとに配置している薬リストを表示する。
 class CustomerDb {
-  static var sheetId = Secret.sheetId;
+  static var sheetId = "sheetId";
   static var sheet = Map<String, dynamic>();
 
   // 購入記録をセーブする
