@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 import 'package:cuore/secret.dart';
-import 'package:googleapis/sheets/v4.dart';
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Sheets {
@@ -35,26 +33,26 @@ class Sheets {
 
     print("GSheetからロードしてセーブ");
 
-    final _credentials =
-        new ServiceAccountCredentials.fromJson(Secret.serviceAccountKey);
-    const _SCOPES = const [SheetsApi.SpreadsheetsScope];
+    // final _credentials =
+    //     new ServiceAccountCredentials.fromJson(Secret.serviceAccountKey);
+    // const _SCOPES = const [SheetsApi.SpreadsheetsScope];
 
-    var client = await clientViaServiceAccount(_credentials, _SCOPES);
-    var api = new SheetsApi(client);
+    // var client = await clientViaServiceAccount(_credentials, _SCOPES);
+    // var api = new SheetsApi(client);
 
-    try {
-      var sheet = await api.spreadsheets.values.get(sheetId, range);
-      var data = sheet.toJson();
+    // try {
+    //   var sheet = await api.spreadsheets.values.get(sheetId, range);
+    //   var data = sheet.toJson();
 
-      getFilePath(name).then((File file) {
-        file.writeAsString(json.encode(data));
-      });
+    //   getFilePath(name).then((File file) {
+    //     file.writeAsString(json.encode(data));
+    //   });
 
-      print(data);
-      return data;
-    } catch (e) {
-      return null;
-    }
+    //   print(data);
+    //   return data;
+    // } catch (e) {
+    //   return null;
+    // }
   }
 
   static Future<void> save(sheetId, sheet, name) async {
