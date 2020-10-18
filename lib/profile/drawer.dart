@@ -1,27 +1,29 @@
+import 'package:cuore/profile/app.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/sl/message.dart';
 
 class AppDrawer {
-  static TextEditingController _textEditingController = new TextEditingController(text: userName);
+  static TextEditingController _textEditingController =
+      new TextEditingController(text: userName);
   static Drawer showDrawer(context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           _createHeader(context),
-            TextField(
-              controller: _textEditingController,              
-              decoration: InputDecoration(
-                labelText: 'Username',
-                hintText: 'Username',
-                icon: Icon(Icons.account_circle),
-              ),
-              autocorrect: false,
-              autofocus: true,
-              keyboardType: TextInputType.text,
-              onChanged: _userNameChanged,
-              onSubmitted: _userNameSubmitted,
+          TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              labelText: 'Username',
+              hintText: 'Username',
+              icon: Icon(Icons.account_circle),
             ),
+            autocorrect: false,
+            autofocus: true,
+            keyboardType: TextInputType.text,
+            onChanged: _userNameChanged,
+            onSubmitted: _userNameSubmitted,
+          ),
           // _createDrawerItem(
           //     context, Icons.person, SLMessage.of("Profile"), () => _handleProfile(context)),
           _createDrawerItem(
@@ -47,13 +49,18 @@ class AppDrawer {
   static String userName = "";
 
   static void _userNameChanged(String value) {
-    userName = value;
-    _textEditingController.text = value;
+    _userNameSubmitted(value);
   }
 
-  static void _userNameSubmitted(String value) {
+  static void _userNameSubmitted(String value) async {
     userName = value;
     _textEditingController.text = value;
+
+    var user = await App.getProfile();
+    user.putIfAbsent('name', () => userName);
+    int now = DateTime.now().toUtc().millisecondsSinceEpoch;
+    user.putIfAbsent("ts", () => now);
+    await App.setProfile(user);
   }
 
   static Widget _createHeader(context) {
