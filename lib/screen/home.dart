@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:cuore/profile/drawer.dart';
-import 'package:cuore/secret.dart';
 import 'package:cuore/repository/sheet.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
