@@ -1,5 +1,6 @@
 import 'dart:async';
 // import 'package:barcode_scan/barcode_scan.dart';
+import 'package:cuore/profile/app.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
@@ -51,6 +52,12 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   // Google sheetからデータをロード
   Future reload() async {
+    // プロファイル設定
+    var user = await App.getProfile();
+    if (user['name'] != null) {
+      AppDrawer.userName = user['name'];
+    }
+
     var items = await CustomerDb.loadItemFromSheets(false);
     var list = await CustomerDb.loadFromSheets(AppDrawer.userName, items, false);
 
