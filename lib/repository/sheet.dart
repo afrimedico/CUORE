@@ -27,7 +27,6 @@ class CustomerDb {
         sheet.values.last[++n] = [
           '',
           '',
-          otc.key,
           otc.code,
           otc.price,
           otc.base,
