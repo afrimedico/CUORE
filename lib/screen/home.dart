@@ -1,5 +1,6 @@
 import 'dart:async';
 // import 'package:barcode_scan/barcode_scan.dart';
+import 'package:cuore/sl/googlesheets.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
@@ -73,6 +74,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
   /// 
   Future reloadAndSave() async {
     print(userEmail);
+    Sheets.clear('items');
+    Sheets.clear('customers');
     var items = await CustomerDb.loadItemFromSheets(true);
     var list = await CustomerDb.loadFromSheets(userEmail, items, true);
     await CustomerDb.saveAsSheets(list);

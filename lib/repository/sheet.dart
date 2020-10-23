@@ -29,6 +29,7 @@ class CustomerDb {
           '',
           '',
           otc.key,
+          otc.code,
           otc.price,
           otc.base,
           otc.preuse,
@@ -90,7 +91,7 @@ class CustomerDb {
           var useall = row[i++];
           var addall = row[i++];
           var otc = OtcData(
-              key: key,
+              key: item.key,
               name: item.name,
               code: item.code,
               price: item.price,
@@ -134,7 +135,7 @@ class CustomerDb {
           code: code,
           price: int.parse(price),
         );
-        result.putIfAbsent(key, () => item);
+        result.putIfAbsent(code, () => item);
       } catch (e) {
         print(e);
         continue;

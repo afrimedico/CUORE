@@ -8,6 +8,13 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Sheets {
+  static Future clear(String name) async {
+    final file = await getFilePath(name);
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+
   static Future<Map<String, dynamic>> load(
       sheetId, range, String name, bool fromServer) async {
     final file = await getFilePath(name);
