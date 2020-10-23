@@ -1,15 +1,29 @@
+import 'package:cuore/profile/app.dart';
 import 'package:flutter/material.dart';
-import 'package:cuore/profile/login.dart';
-import 'package:cuore/profile/signin.dart';
 import 'package:cuore/sl/message.dart';
 
 class AppDrawer {
+  static TextEditingController _textEditingController =
+      new TextEditingController(text: userName);
   static Drawer showDrawer(context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           _createHeader(context),
+          TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              labelText: 'Username',
+              hintText: 'Username',
+              icon: Icon(Icons.account_circle),
+            ),
+            autocorrect: false,
+            autofocus: true,
+            keyboardType: TextInputType.text,
+            onChanged: _userNameChanged,
+            onSubmitted: _userNameSubmitted,
+          ),
           // _createDrawerItem(
           //     context, Icons.person, SLMessage.of("Profile"), () => _handleProfile(context)),
           _createDrawerItem(
@@ -32,6 +46,23 @@ class AppDrawer {
     );
   }
 
+  static String userName = "";
+
+  static void _userNameChanged(String value) {
+    _userNameSubmitted(value);
+  }
+
+  static void _userNameSubmitted(String value) async {
+    userName = value;
+    _textEditingController.text = value;
+
+    var user = await App.getProfile();
+    user.putIfAbsent('name', () => userName);
+    int now = DateTime.now().toUtc().millisecondsSinceEpoch;
+    user.putIfAbsent("ts", () => now);
+    await App.setProfile(user);
+  }
+
   static Widget _createHeader(context) {
     return DrawerHeader(
       margin: EdgeInsets.zero,
@@ -47,13 +78,13 @@ class AppDrawer {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               SizedBox(height: 10),
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  userImageUrl,
-                ),
-                radius: 30,
-                backgroundColor: Colors.transparent,
-              ),
+              // CircleAvatar(
+              //   backgroundImage: NetworkImage(
+              //     userImageUrl,
+              //   ),
+              //   radius: 30,
+              //   backgroundColor: Colors.transparent,
+              // ),
               SizedBox(height: 10),
               Text(
                 userName,
@@ -108,11 +139,10 @@ class AppDrawer {
         ],
       ),
       onTap: () {
-        signOutGoogle();
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) {
-          return LoginPage();
-        }), ModalRoute.withName('/'));
+        // Navigator.of(context).pushAndRemoveUntil(
+        //     MaterialPageRoute(builder: (context) {
+        //   return LoginPage();
+        // }), ModalRoute.withName('/'));
       },
     );
   }

@@ -1,6 +1,6 @@
+import 'package:cuore/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:cuore/profile/login.dart';
 import 'package:cuore/sl/message.dart';
 import 'package:provider/provider.dart';
 
@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           textTheme:
               TextTheme(title: TextStyle(color: Colors.black, fontSize: 16))),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: HomeScreen(),
       // home: new CureGoHome(),
     );
   }
