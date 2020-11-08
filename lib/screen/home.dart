@@ -20,8 +20,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class CustomerData {
-  CustomerData({this.name});
+  CustomerData({this.place, this.name});
 
+  String place;
   String name;
   List<OtcData> otcList = List<OtcData>();
   int sale;

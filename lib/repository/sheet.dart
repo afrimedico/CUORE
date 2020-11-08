@@ -12,31 +12,36 @@ class CustomerDb {
 
   // 購入記録をセーブする
   static Future<void> saveAsSheets(List<CustomerData> list) async {
-    int n = 0;
+    var data = List<Map<String, dynamic>>();
     for (var row in list) {
-      sheet.values.last[++n] = [
-        'A',
-        row.name,
-        'updated',
-        row.updated.toUtc().toIso8601String()
-      ];
-      sheet.values.last[++n] = ['', '', 'sale', row.sale];
-      sheet.values.last[++n] = ['', '', 'debt', row.debt];
-      sheet.values.last[++n] = ['', '', 'box', row.box];
+      data.add({
+        "PLACE": row.place,
+        "CLIENT NAME": row.name,
+        "Key": 'updated',
+        "Value": row.updated.toUtc().toIso8601String()
+      });
+      data.add(
+          {"PLACE": "", "CLIENT NAME": "", "Key": 'sale', "Value": row.sale});
+      data.add(
+          {"PLACE": "", "CLIENT NAME": "", "Key": 'debt', "Value": row.debt});
+      data.add(
+          {"PLACE": "", "CLIENT NAME": "", "Key": 'box', "Value": row.box});
       for (var otc in row.otcList) {
-        sheet.values.last[++n] = [
-          '',
-          '',
-          otc.code,
-          otc.price,
-          otc.base,
-          otc.preuse,
-          otc.preadd,
-          otc.useall,
-          otc.addall
-        ];
+        data.add({
+          "PLACE": "",
+          "CLIENT NAME": "",
+          "Key": otc.code,
+          "Value": otc.price,
+          "Count": otc.base,
+          "Use": otc.preuse,
+          "Add": otc.preadd,
+          "Useall": otc.useall,
+          "addall": otc.addall
+        });
       }
     }
+    sheet = Map<String, dynamic>();
+    sheet.putIfAbsent("values", () => data);
     await Sheets.save(sheetId, sheet, 'customers');
   }
 
@@ -50,59 +55,44 @@ class CustomerDb {
     }
 
     List<CustomerData> result = List<CustomerData>();
-    int n = 0;
-    var customer = '';
     CustomerData user = null;
     for (var row in sheet.values.last) {
-      n++;
-      if (n == 1) {
-        continue;
+      var place = row['PLACE'];
+      var client = row['CLIENT NAME'];
+      var key = row['Key'];
+      var value = row['Value'];
+      if (client.length > 0) {
+        if (user != null) {
+          result.add(user);
+        }
+        user = CustomerData(place: place, name: client);
       }
-      var i = 0;
-      try {
-        var staff = row[i++];
-        String name = row[i++];
-        if (name.length > 0) {
-          if (user != null) {
-            result.add(user);
-          }
-          customer = name;
-          user = CustomerData(name: name);
-        }
-        var key = row[i++];
-        var value = row[i++];
-
-        if (key == 'updated') {
-          user.updated = DateTime.parse(value);
-        } else if (key == 'sale') {
-          user.sale = value;
-        } else if (key == 'debt') {
-          user.debt = value;
-        } else if (key == 'box') {
-          user.box = value;
-        } else {
-          var item = items[key];
-
-          var count = row[i++];
-          var use = row[i++];
-          var add = row[i++];
-          var useall = row[i++];
-          var addall = row[i++];
-          var otc = OtcData(
-              key: item.key,
-              name: item.name,
-              code: item.code,
-              price: item.price,
-              base: count,
-              preuse: use,
-              preadd: add,
-              useall: useall,
-              addall: addall);
-          user.otcList.add(otc);
-        }
-      } catch (e) {
-        print(e);
-        continue;
+      if (key == 'updated') {
+        user.updated = DateTime.parse(value);
+      } else if (key == 'sale') {
+        user.sale = value;
+      } else if (key == 'debt') {
+        user.debt = value;
+      } else if (key == 'box') {
+        user.box = value.toString();
+      } else {
+        var count = row['Count'];
+        var use = row['Use'];
+        var add = row['Add'];
+        var useall = row['Useall'];
+        var addall = row['addall'];
+        var item = items[key];
+        var otc = OtcData(
+            key: item.key,
+            name: item.name,
+            code: item.code,
+            price: item.price,
+            base: count,
+            preuse: use,
+            preadd: add,
+            useall: useall,
+            addall: addall);
+        user.otcList.add(otc);
       }
     }
     result.add(user);
@@ -110,7 +100,8 @@ class CustomerDb {
   }
 
   // アイテムリストをロードする
-  static Future<Map<String, ItemData>> loadItemFromSheets(bool fromServer) async {
+  static Future<Map<String, ItemData>> loadItemFromSheets(
+      bool fromServer) async {
     var range = 'item!A1:I1000';
     sheet = await Sheets.load(sheetId, range, 'items', fromServer);
 
