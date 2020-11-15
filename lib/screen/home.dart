@@ -61,10 +61,12 @@ class _WhatsAppHomeState extends State<HomeScreen>
     }
 
     var items = await CustomerDb.loadItemFromSheets(false);
-    var list = await CustomerDb.loadFromSheets(AppDrawer.userName, items, false);
+    var list =
+        await CustomerDb.loadFromSheets(AppDrawer.userName, items, false);
 
     setState(() {
       _customerList = list;
+      _searchedList = list;
     });
   }
 
@@ -76,7 +78,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     }
   }
 
-  /// 
+  ///
   Future reloadAndSave() async {
     Sheets.clear('items');
     Sheets.clear('customers');
@@ -133,6 +135,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
   // Scanned barcode data.
   String barcode = "";
   String message = "";
+  var _searchedList = [];
 
 // Method for scanning barcode....
   Future barcodeScanning() async {
@@ -199,11 +202,12 @@ class _WhatsAppHomeState extends State<HomeScreen>
     if (loading) {
       return Text("Processing...");
     }
-    if (_customerList == null) {
+    if (_searchedList == null) {
       return Text('No user data: ' + AppDrawer.userName);
     }
-    int len = _customerList != null ? _customerList.length : 0;
+    int len = _searchedList != null ? _searchedList.length : 0;
     return new Column(children: <Widget>[
+      _inputLine(),
       Text(barcode),
       new Flexible(
         child: new ListView.builder(
@@ -216,13 +220,43 @@ class _WhatsAppHomeState extends State<HomeScreen>
     ]);
   }
 
+  final TextEditingController _mainInputController =
+      new TextEditingController();
+
+  Widget _inputLine() {
+    return (Padding(
+        padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: TextField(
+          decoration: InputDecoration(hintText: 'Search'),
+          controller: _mainInputController,
+          onChanged: _handleMainInputChanged,
+        )));
+  }
+
+  void _handleMainInputChanged(String text) async {
+    // _mainInputController.text = text;
+    var searchedList = [];
+    for (int i = 0; i < _customerList.length; i++) {
+      var customer = _customerList[i];
+      if (customer.name.toLowerCase().indexOf(text.toLowerCase()) != -1) {
+        searchedList.add(customer);
+      }
+    }
+    if (text.length == 0 && searchedList.length == 0) {
+      searchedList = _customerList;
+    }
+    setState(() {
+      _searchedList = searchedList;
+    });
+  }
+
   String date(customer) {
     final _formatter = DateFormat("MM/dd HH:mm");
     return _formatter.format(customer.updated.toLocal());
   }
 
   Widget _buildCustomerItem(int i) {
-    var customer = _customerList[i];
+    var customer = _searchedList[i];
     print("customer");
     customer.log();
     return Padding(
@@ -270,7 +304,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   void _onTap(int index) async {
     if (this.barcode.length > 0) {
-      _customerList[index].box = this.barcode;
+      _searchedList[index].box = this.barcode;
     }
     setState(() {
       this.barcode = "";
@@ -279,6 +313,6 @@ class _WhatsAppHomeState extends State<HomeScreen>
         context,
         MaterialPageRoute(
             builder: (context) => new OtcListScreen(
-                customer: _customerList[index], callback: callback)));
+                customer: _searchedList[index], callback: callback)));
   }
 }
