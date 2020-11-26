@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cuore/profile/app.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
@@ -436,19 +439,31 @@ class _RingupState extends State<RingupScreen>
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
+  List<String> _sending = [];
+  List<String> _sent = [];
+
   void sendMessage(String text) async {
     print(text);
 
+    _sending.add(text);
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
     var url =
-        'https://am-cuore.azurewebsites.net/api/SmsTrigger?code=gDMkIbCsRlrWlABD5t4OMuG5C/G4AquAh1WSTWUaj7NrDanHSdrnBw==';
-    final response = await http.post(url, body: text);
-    print(url);
+        'https://cuore-sms.azurewebsites.net/api/HttpTrigger1?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
+    final response = await http.post(url,
+        headers: headers, body: json.encode({"SmsInfo": text}));
     print(response.statusCode);
-    print(response.body);
     if (response.statusCode != 200) {
       var address = "+1 717 727-2636";
       // sendSms(address, text);
+    } else {    
+      _sending.remove(text);
+      _sent.add(text);
     }
+    print(_sending);
+    print(_sent);
   }
 
   void sendSms(String address, String text) {
@@ -499,7 +514,7 @@ class _RingupState extends State<RingupScreen>
   }
 
   String date(customer) {
-    final _formatter = DateFormat("MM/dd HH:mm");
+    final _formatter = DateFormat("yy/MM/dd HH:mm");
     return _formatter.format(customer.updated.toLocal());
   }
 }
