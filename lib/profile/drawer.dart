@@ -40,7 +40,7 @@ class AppDrawer {
                     applicationVersion: "Test version",
                   )),
           Divider(),
-          _createSignOutItem(context),
+          // _createSignOutItem(context),
         ],
       ),
     );
@@ -54,7 +54,6 @@ class AppDrawer {
 
   static void _userNameSubmitted(String value) async {
     userName = value;
-    _textEditingController.text = value;
 
     var user = await App.getProfile();
     user.putIfAbsent('name', () => userName);
