@@ -84,6 +84,9 @@ class _RingupState extends State<RingupScreen>
 
   Widget _buildCustomerItem(int i) {
     var otc = _otcList[i];
+    if (otc.base - otc.count == 0) {
+      return Container();
+    }
     return Padding(
       padding: new EdgeInsets.all(4.0),
       child: OutlineButton(
@@ -91,22 +94,21 @@ class _RingupState extends State<RingupScreen>
         child: new Column(
           children: <Widget>[
             new ListTile(
-              title: new Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              title: new Text(
+                otc.name,
+                style:
+                    new TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+              ),
+              trailing: new Wrap(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new Text(
-                    otc.name,
-                    style: new TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16.0),
-                  ),
                   new Text(
                     otc.price.toString(),
                     style: new TextStyle(color: Colors.pink, fontSize: 16.0),
                   ),
                   new Text(
-                    'use: ' +
-                        (otc.base - otc.count).toString() +
-                        (otc.count == 0 ? ' (count 0)' : ''),
+                    ' x ' +
+                        (otc.base - otc.count).toString(),
                     style: new TextStyle(color: Colors.black, fontSize: 16.0),
                   ),
                 ],
@@ -161,10 +163,10 @@ class _RingupState extends State<RingupScreen>
         use += n * otc.price;
       }
     }
-    // 未入力なら
-    if (sum == 0) {
-      use = 0;
-    }
+    // // 未入力なら
+    // if (sum == 0) {
+    //   use = 0;
+    // }
 
     // 負債額
     int debt = customer.debt;
@@ -458,7 +460,7 @@ class _RingupState extends State<RingupScreen>
     if (response.statusCode != 200) {
       var address = "+1 717 727-2636";
       // sendSms(address, text);
-    } else {    
+    } else {
       _sending.remove(text);
       _sent.add(text);
     }

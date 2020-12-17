@@ -2,14 +2,13 @@ import 'dart:async';
 // import 'package:barcode_scan/barcode_scan.dart';
 import 'package:cuore/sl/googlesheets.dart';
 import 'package:cuore/profile/app.dart';
+import 'package:cuore/sl/message.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
-import 'package:cuore/profile/drawer.dart';
 import 'package:cuore/repository/sheet.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:sms/sms.dart';
 
 /// Show customers list.
 class HomeScreen extends StatefulWidget {
@@ -44,6 +43,9 @@ class _WhatsAppHomeState extends State<HomeScreen>
   TabController _tabController;
   List<CustomerData> _customerList;
 
+  TextEditingController _textEditingController =
+      new TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -57,12 +59,13 @@ class _WhatsAppHomeState extends State<HomeScreen>
     // プロファイル設定
     var user = await App.getProfile();
     if (user['name'] != null) {
-      AppDrawer.userName = user['name'];
+      userName = user['name'];
     }
+    _textEditingController.text = userName;
 
     var items = await CustomerDb.loadItemFromSheets(false);
     var list =
-        await CustomerDb.loadFromSheets(AppDrawer.userName, items, false);
+        await CustomerDb.loadFromSheets(userName, items, false);
 
     setState(() {
       _customerList = list;
@@ -83,7 +86,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     Sheets.clear('items');
     Sheets.clear('customers');
     var items = await CustomerDb.loadItemFromSheets(true);
-    var list = await CustomerDb.loadFromSheets(AppDrawer.userName, items, true);
+    var list = await CustomerDb.loadFromSheets(userName, items, true);
     await CustomerDb.saveAsSheets(list);
   }
 
@@ -103,9 +106,165 @@ class _WhatsAppHomeState extends State<HomeScreen>
       key: _scaffoldKey,
       appBar: appBar(),
       body: body(),
-      drawer: AppDrawer.showDrawer(context),
-      floatingActionButton: buildBottomNavigationBar(context, barcodeScanning),
+      drawer: showDrawer(context),
+      // floatingActionButton: buildBottomNavigationBar(context, barcodeScanning),
     );
+  }
+
+  String userName = "";
+  String userNameTmp = "";
+
+  Drawer showDrawer(context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          _createHeader(context),
+          TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              labelText: 'Username',
+              hintText: 'Username',
+              icon: Icon(Icons.account_circle),
+            ),
+            autocorrect: false,
+            autofocus: true,
+            keyboardType: TextInputType.text,
+            onChanged: _userNameChanged,
+            onSubmitted: _userNameSubmitted,
+          ),
+          RaisedButton(
+            child: const Text('Save'),
+            color: Colors.orange,
+            textColor: Colors.white,
+            onPressed: () async {
+              setState(() {
+                userName = userNameTmp;
+              });
+              var user = await App.getProfile();
+              user.putIfAbsent('name', () => userName);
+              int now = DateTime.now().toUtc().millisecondsSinceEpoch;
+              user.putIfAbsent("ts", () => now);
+              await App.setProfile(user);
+            },
+          ),
+          // _createDrawerItem(
+          //     context, Icons.person, SLMessage.of("Profile"), () => _handleProfile(context)),
+          _createDrawerItem(
+              context,
+              Icons.info,
+              SLMessage.of("Version"),
+              () => showAboutDialog(
+                    context: context,
+                    applicationIcon: Image.asset(
+                      'assets/icons/ic_launcher.png',
+                      width: 64,
+                    ),
+                    applicationName: "CUORE",
+                    applicationVersion: "Test version",
+                  )),
+          Divider(),
+          // _createSignOutItem(context),
+        ],
+      ),
+    );
+  }
+
+  void _userNameChanged(String value) {
+    _userNameSubmitted(value);
+  }
+
+  void _userNameSubmitted(String value) async {
+    userNameTmp = value;
+  }
+
+  Widget _createHeader(context) {
+    return DrawerHeader(
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+      ),
+      child: Center(
+        child: InkWell(
+          onTap: () => _handleProfile(context),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              SizedBox(height: 10),
+              // CircleAvatar(
+              //   backgroundImage: NetworkImage(
+              //     userImageUrl,
+              //   ),
+              //   radius: 30,
+              //   backgroundColor: Colors.transparent,
+              // ),
+              SizedBox(height: 10),
+              Text(
+                userName,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.deepPurple,
+                    fontWeight: FontWeight.bold),
+              ),
+              // SizedBox(height: 10),
+              // Text(
+              //   userEmail,
+              //   style: TextStyle(
+              //       fontSize: 16,
+              //       color: Colors.deepPurple,
+              //       fontWeight: FontWeight.bold),
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _createDrawerItem(context, icon, text, onTap) {
+    return ListTile(
+      title: Row(
+        children: <Widget>[
+          Icon(
+            icon,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Text(text),
+          )
+        ],
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _createSignOutItem(context) {
+    return ListTile(
+      title: Row(
+        children: <Widget>[
+          Icon(
+            Icons.exit_to_app,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Text("Sign Out"),
+          )
+        ],
+      ),
+      onTap: () {
+        // Navigator.of(context).pushAndRemoveUntil(
+        //     MaterialPageRoute(builder: (context) {
+        //   return LoginPage();
+        // }), ModalRoute.withName('/'));
+      },
+    );
+  }
+
+  void _handleProfile(context) {
+    // Navigator.push(context,
+    //     MaterialPageRoute(builder: (BuildContext context) => UserScreen()));
   }
 
   Widget buildBottomNavigationBar(context, run) {
@@ -181,7 +340,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
       title: new GestureDetector(
         onTap: () {},
         child: Center(
-          child: Text(AppDrawer.userName),
+          child: Text(userName),
         ),
       ),
       actions: <Widget>[
@@ -203,7 +362,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
       return Text("Processing...");
     }
     if (_searchedList == null) {
-      return Text('No user data: ' + AppDrawer.userName);
+      return Text('No user data: ' + userName);
     }
     int len = _searchedList != null ? _searchedList.length : 0;
     return new Column(children: <Widget>[
