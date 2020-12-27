@@ -43,8 +43,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
   TabController _tabController;
   List<CustomerData> _customerList;
 
-  TextEditingController _textEditingController =
-      new TextEditingController();
+  TextEditingController _textEditingController = new TextEditingController();
 
   @override
   void initState() {
@@ -64,8 +63,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     _textEditingController.text = userName;
 
     var items = await CustomerDb.loadItemFromSheets(false);
-    var list =
-        await CustomerDb.loadFromSheets(userName, items, false);
+    var list = await CustomerDb.loadFromSheets(userName, items, false);
 
     setState(() {
       _customerList = list;
@@ -142,7 +140,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                 userName = userNameTmp;
               });
               var user = await App.getProfile();
-              user.putIfAbsent('name', () => userName);
+              user.putIfAbsent('name', () => userNameTmp);
               int now = DateTime.now().toUtc().millisecondsSinceEpoch;
               user.putIfAbsent("ts", () => now);
               await App.setProfile(user);
