@@ -128,8 +128,6 @@ class _WhatsAppHomeState extends State<HomeScreen>
             autocorrect: false,
             autofocus: true,
             keyboardType: TextInputType.text,
-            onChanged: _userNameChanged,
-            onSubmitted: _userNameSubmitted,
           ),
           RaisedButton(
             child: const Text('Save'),
@@ -137,12 +135,12 @@ class _WhatsAppHomeState extends State<HomeScreen>
             textColor: Colors.white,
             onPressed: () async {
               setState(() {
-                userName = userNameTmp;
+                userName = _textEditingController.text;
               });
               var user = await App.getProfile();
-              user.putIfAbsent('name', () => userNameTmp);
+              user.update('name', (val) => _textEditingController.text);
               int now = DateTime.now().toUtc().millisecondsSinceEpoch;
-              user.putIfAbsent("ts", () => now);
+              user.update("ts", (val) => now);
               await App.setProfile(user);
             },
           ),
@@ -166,14 +164,6 @@ class _WhatsAppHomeState extends State<HomeScreen>
         ],
       ),
     );
-  }
-
-  void _userNameChanged(String value) {
-    _userNameSubmitted(value);
-  }
-
-  void _userNameSubmitted(String value) async {
-    userNameTmp = value;
   }
 
   Widget _createHeader(context) {

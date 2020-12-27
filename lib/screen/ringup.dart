@@ -8,7 +8,7 @@ import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:sms/sms.dart';
+// import 'package:sms/sms.dart';
 import 'package:http/http.dart' as http;
 
 /// Show Ring up.
@@ -469,25 +469,25 @@ class _RingupState extends State<RingupScreen>
   }
 
   void sendSms(String address, String text) {
-    SmsSender sender = new SmsSender();
-    SmsMessage message = new SmsMessage(address, text);
-    message.onStateChanged.listen((state) {
-      if (state == SmsMessageState.Sent) {
-        print("SMS is sent!");
-      } else if (state == SmsMessageState.Delivered) {
-        print("SMS is delivered!");
-      } else if (state == SmsMessageState.Fail) {
-        print("SMS is Fail!");
-      } else if (state == SmsMessageState.None) {
-        print("SMS is None!");
-      } else if (state == SmsMessageState.Sending) {
-        print("SMS is Sending!");
-      } else {
-        // unknown
-        print("SMS is unknown!");
-      }
-    });
-    sender.sendSms(message);
+    // SmsSender sender = new SmsSender();
+    // SmsMessage message = new SmsMessage(address, text);
+    // message.onStateChanged.listen((state) {
+    //   if (state == SmsMessageState.Sent) {
+    //     print("SMS is sent!");
+    //   } else if (state == SmsMessageState.Delivered) {
+    //     print("SMS is delivered!");
+    //   } else if (state == SmsMessageState.Fail) {
+    //     print("SMS is Fail!");
+    //   } else if (state == SmsMessageState.None) {
+    //     print("SMS is None!");
+    //   } else if (state == SmsMessageState.Sending) {
+    //     print("SMS is Sending!");
+    //   } else {
+    //     // unknown
+    //     print("SMS is unknown!");
+    //   }
+    // });
+    // sender.sendSms(message);
   }
 
   Future<String> getSmsText(customer, _otcList, collection) async {
