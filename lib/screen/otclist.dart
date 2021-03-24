@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 // import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/components/parts.dart';
@@ -180,66 +181,96 @@ class OtcListState extends State<OtcListScreen>
         decoration: new BoxDecoration(
             color: (otc.base > 0 && otc.count == 0
                 ? Colors.greenAccent
-                : otc.count > otc.base ? Colors.redAccent : Colors.white)),
+                : otc.count > otc.base
+                    ? Colors.lightBlueAccent
+                    : Colors.white)),
         child: OutlineButton(
           padding:
-              EdgeInsets.only(top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
+              EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
           child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               new ListTile(
                 title: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                   children: <Widget>[
-                    new Flexible(
-                      flex: 1,
-                      child: CircleAvatar(
-                        backgroundImage: Image.asset(
-                                "assets/animals/" + otc.key + ".png",
-                                height: 100)
-                            .image,
-                        radius: 30,
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
                     new Flexible(
                       flex: 1,
                       child: new Text(
                         otc.name,
                         style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      ),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: Text(otc.base.toString() + "→"),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: new Text(
-                        otc.count.toString(),
-                        style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 28.0),
-                      ),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 50,
-                        child: Parts().renderIconButton(Icons.remove, () {
-                          _remove(otc);
-                        }),
-                      ),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 50,
-                        child: Parts().renderIconButton(Icons.add, () {
-                          _add(otc);
-                        }),
+                            fontWeight: FontWeight.bold, fontSize: 16.0),
                       ),
                     ),
                   ],
+                ),
+                leading: SizedBox(
+                  width: 75,
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          (i + 1).toString(),
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      CircleAvatar(
+                        backgroundImage: Image.asset(
+                                "assets/animals/" + otc.key + ".png",
+                                height: 100)
+                            .image,
+                        radius: 25,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ],
+                  ),
+                ),
+                subtitle: Container(
+                  margin: EdgeInsets.only(top:5,bottom:5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(otc.base.toString() + "→"),
+
+                          Text(
+                            otc.count.toString(),
+                            style: new TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 28.0),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          CupertinoButton(
+                            child: Text('-'),
+                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            borderRadius: BorderRadius.zero,
+                            minSize: 0,
+                            color: Colors.green,
+                            onPressed: () => _remove(otc),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          CupertinoButton(
+                            child: Text('+'),
+                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            borderRadius: BorderRadius.zero,
+                            minSize: 0,
+                            color: Colors.green,
+                            onPressed: () => _add(otc),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
                 // subtitle: Text(otc.base.toString()),
               ),

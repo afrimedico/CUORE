@@ -187,16 +187,25 @@ class OtcListState2 extends State<OtcListScreen2>
                 title: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Flexible(
-                      flex: 1,
-                      child: CircleAvatar(
-                        backgroundImage: Image.asset(
-                                "assets/animals/" + otc.key + ".png",
-                                height: 100)
-                            .image,
-                        radius: 30,
-                        backgroundColor: Colors.transparent,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          (i + 1).toString(),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        CircleAvatar(
+                          backgroundImage: Image.asset(
+                              "assets/animals/" + otc.key + ".png",
+                              height: 100)
+                              .image,
+                          radius: 30,
+                          backgroundColor: Colors.transparent,
+                        ),
+                      ],
                     ),
                     new Flexible(
                       flex: 1,
