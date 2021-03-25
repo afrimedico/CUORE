@@ -370,30 +370,122 @@ class _WhatsAppHomeState extends State<HomeScreen>
   final TextEditingController _mainInputController =
       new TextEditingController();
 
+  String _selectedVillage;
+  String _searchText;
+
   Widget _inputLine() {
-    return (Padding(
-        padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
-        child: TextField(
-          decoration: InputDecoration(hintText: 'Search'),
-          controller: _mainInputController,
-          onChanged: _handleMainInputChanged,
-        )));
+    if (_customerList == null || _customerList.length <= 0) {
+      return Text("Processing...");
+    }
+
+    List<String> _customerVillages = List();
+
+    _customerList.forEach((customer) {
+      if (!_customerVillages.contains(customer.place.toUpperCase())) {
+        _customerVillages.add(customer.place.toUpperCase());
+      }
+    });
+
+    return (Column(
+      children: [
+        Padding(
+            padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: TextField(
+              decoration: InputDecoration(hintText: 'Search'),
+              controller: _mainInputController,
+              onChanged: _handleMainInputChanged,
+            )),
+        Padding(
+            padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Row(
+              children: [
+                Text(
+                  'Village',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                GestureDetector(
+                  // behavior: HitTestBehavior.opaque,
+                  child: DropdownButton<String>(
+                    icon: Icon(Icons.filter_alt_rounded),
+                    elevation: 10,
+                    hint: Text(_selectedVillage != null
+                        ? _selectedVillage
+                        : 'Choose an option'),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: 'All',
+                        child: new Text('All villages'),
+                      ),
+                      ...(_customerVillages.map((village) {
+                          return new DropdownMenuItem<String>(
+                            value: village,
+                            child: new Text(village),
+                          );
+                        }).toList()
+                      )
+                    ],
+                    onChanged: _handleVillageChanged,
+                  ),
+                ),
+              ],
+            ))
+      ],
+    ));
+  }
+
+  void _handleVillageChanged(String village) async {
+    if (village.length == 0) {
+      return;
+    }
+
+    FocusScope.of(context).requestFocus(new FocusNode());
+
+    _mainInputController.text = '';
+
+    if(village.toLowerCase() == 'all'){
+      return setState(() {
+        _selectedVillage = village;
+        _searchedList = _customerList;
+      });
+    }
+
+    var searchedList = [];
+
+    for (int i = 0; i < _customerList.length; i++) {
+      var customer = _customerList[i];
+
+      if (customer.place.toUpperCase() == village) {
+        searchedList.add(customer);
+      }
+    }
+
+
+    setState(() {
+      _selectedVillage = village;
+      _searchedList = searchedList;
+    });
   }
 
   void _handleMainInputChanged(String text) async {
     // _mainInputController.text = text;
     var searchedList = [];
+
     for (int i = 0; i < _customerList.length; i++) {
       var customer = _customerList[i];
       if (customer.name.toLowerCase().indexOf(text.toLowerCase()) != -1) {
         searchedList.add(customer);
       }
     }
-    if (text.length == 0 && searchedList.length == 0) {
+    if (text.length == 0 &&
+        searchedList.length == 0 ) {
       searchedList = _customerList;
     }
     setState(() {
       _searchedList = searchedList;
+      _searchText = text;
     });
   }
 
