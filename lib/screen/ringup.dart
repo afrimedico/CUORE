@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cuore/profile/app.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 // import 'package:sms/sms.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +28,8 @@ class _RingupState extends State<RingupScreen>
     with SingleTickerProviderStateMixin {
   CustomerData customer;
   List<OtcData> _otcList;
+
+  DateTime selectedVisitedDate = DateTime.now();
 
   _RingupState({this.customer});
 
@@ -77,6 +81,8 @@ class _RingupState extends State<RingupScreen>
         ),
       ),
       new Divider(height: 1.0),
+      _visitDate(),
+      new Divider(height: 1.0),
       _result(),
       _buildBottomButton2()
     ]);
@@ -107,8 +113,7 @@ class _RingupState extends State<RingupScreen>
                     style: new TextStyle(color: Colors.pink, fontSize: 16.0),
                   ),
                   new Text(
-                    ' x ' +
-                        (otc.base - otc.count).toString(),
+                    ' x ' + (otc.base - otc.count).toString(),
                     style: new TextStyle(color: Colors.black, fontSize: 16.0),
                   ),
                 ],
@@ -125,6 +130,65 @@ class _RingupState extends State<RingupScreen>
     return new Column(children: <Widget>[
       _buildBottomNavigationBar(),
     ]);
+  }
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedVisitedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedVisitedDate)
+      setState(() {
+        selectedVisitedDate = picked;
+      });
+  }
+
+  Widget _visitDate() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          SizedBox(width: 15, height: 10),
+          Text(
+            'Visit date',
+            style: new TextStyle(fontSize: 16.0),
+          ),
+          SizedBox(
+            width: 30,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(5.0) //
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 5,
+                ),
+                Text("${selectedVisitedDate.toLocal()}".split(' ')[0],
+                    style: new TextStyle(
+                        fontSize: 16.0, fontWeight: FontWeight.bold)),
+                SizedBox(
+                  width: 5,
+                ),
+                CupertinoButton(
+                  child: Icon(Icons.date_range),
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  borderRadius: BorderRadius.zero,
+                  minSize: 0,
+                  color: Colors.green,
+                  onPressed: () => _selectDate(context),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget label(String label) {
