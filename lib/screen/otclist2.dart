@@ -55,7 +55,7 @@ class OtcListState2 extends State<OtcListScreen2>
       key: _scaffoldKey,
       appBar: appBar(),
       body: body(),
-      floatingActionButton: buildBottomNavigationBar(context, _handleDone),
+      // floatingActionButton: buildBottomNavigationBar(context, _handleDone),
     );
   }
 
