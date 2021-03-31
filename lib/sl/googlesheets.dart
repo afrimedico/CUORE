@@ -15,20 +15,21 @@ class Sheets {
   static Future<Map<String, dynamic>> load(
       sheetId, range, String name, bool fromServer) async {
     final file = await getFilePath(name);
+
     if (await file.exists()) {
       var result = await file.readAsString();
       if (result != null && result.length > 0) {
-        print("ファイルからロード");
-        print(file.uri);
-        print(json.decode(result));
+        // print("ファイルからロード");
+        // print(file.uri);
+        // print(json.decode(result));
         return json.decode(result);
       }
     }
 
-    print("Assetからロード");
+    // print("Assetからロード");
     var result = await rootBundle.loadString("assets/data/" + name + ".json");
     if (result != null && result.length > 0) {
-      print(json.decode(result));
+      // print(json.decode(result));
       return json.decode(result);
     }
 
@@ -60,8 +61,8 @@ class Sheets {
     print("ファイルへセーブ");
     // var data = json.encode(mapdata);
     getFilePath(name).then((File file) {
-      print(file.uri);
-      print(json.encode(sheet));
+      // print(file.uri);
+      // print(json.encode(sheet));
       file.writeAsString(json.encode(sheet));
     });
     // final _credentials =
@@ -86,9 +87,17 @@ class Sheets {
     // print((await getExternalStorageDirectory()).path);
 
     final _fileName = sheetId + '.json';
-    final directory = await getExternalStorageDirectory();
+
+    var directory;
+
+    if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    }else{
+      directory = await getExternalStorageDirectory();
+    }
+
     var testdir =
-        await new Directory('${directory.path}').create(recursive: true);
+    await new Directory('${directory.path}').create(recursive: true);
     // final directory = await getExternalStorageDirectory();
     // print(directory.path + '/' + _fileName);
     return File(testdir.path + '/' + _fileName);
