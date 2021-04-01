@@ -138,9 +138,9 @@ class _WhatsAppHomeState extends State<HomeScreen>
                 userName = _textEditingController.text;
               });
               var user = await App.getProfile();
-              user.update('name', (val) => _textEditingController.text);
               int now = DateTime.now().toUtc().millisecondsSinceEpoch;
-              user.update("ts", (val) => now);
+              user['name'] = _textEditingController.text;
+              user['ts'] = now;
               await App.setProfile(user);
             },
           ),
@@ -496,8 +496,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   Widget _buildCustomerItem(int i) {
     var customer = _searchedList[i];
-    print("customer");
-    customer.log();
+    // print("customer");
+    // customer.log();
     return Padding(
       padding: new EdgeInsets.all(4.0),
       child: new Container(
