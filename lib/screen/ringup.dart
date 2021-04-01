@@ -159,10 +159,10 @@ class _RingupState extends State<RingupScreen>
           ),
           Container(
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
+              border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.all(
                   Radius.circular(5.0) //
-              ),
+                  ),
             ),
             child: Row(
               children: [
@@ -371,6 +371,28 @@ class _RingupState extends State<RingupScreen>
     collection = int.parse(text);
   }
 
+  _showConfirmCustomerDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => new CupertinoAlertDialog(
+        title: new Text(customer.name),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text("Send"),
+            onPressed: () async {
+              await _handleDone();
+            },
+          ),
+          CupertinoDialogAction(
+            child: Text("Cancel"),
+            onPressed: () => Navigator.of(context).pop(false),
+          )
+        ],
+      ),
+    );
+  }
+
   _buildBottomButton2() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -411,9 +433,9 @@ class _RingupState extends State<RingupScreen>
             fit: FlexFit.tight,
             flex: 2,
             child: RaisedButton(
-              onPressed: () async {
+              onPressed: () {
                 if (collection >= 0) {
-                  await _handleDone();
+                  _showConfirmCustomerDialog();
                 }
               },
               color: (collection >= 0) ? Colors.blue : Colors.white,
