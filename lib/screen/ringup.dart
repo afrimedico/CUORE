@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cuore/profile/app.dart';
@@ -9,6 +10,7 @@ import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 
 // import 'package:sms/sms.dart';
 import 'package:http/http.dart' as http;
@@ -281,23 +283,23 @@ class _RingupState extends State<RingupScreen>
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                label('Billing'),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                labelColor(claim.toString(), Colors.red[300]),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     label('Billing'),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     labelColor(claim.toString(), Colors.red[300]),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //   ],
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -315,23 +317,23 @@ class _RingupState extends State<RingupScreen>
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                label('Remaining'),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                labelColor(next.toString(), Colors.red[300]),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     label('Remaining'),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     labelColor(next.toString(), Colors.red[300]),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //   ],
+            // ),
           ],
         ));
   }
@@ -372,6 +374,7 @@ class _RingupState extends State<RingupScreen>
   }
 
   _showConfirmCustomerDialog() {
+    var _originalContext = context;
     showDialog(
       context: context,
       builder: (BuildContext context) => new CupertinoAlertDialog(
@@ -382,15 +385,27 @@ class _RingupState extends State<RingupScreen>
             child: Text("Send"),
             onPressed: () async {
               await _handleDone();
+              Navigator.of(context).pop(false);
             },
           ),
           CupertinoDialogAction(
             child: Text("Cancel"),
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () {
+              Navigator.of(_originalContext).popUntil((route) => route.isFirst);
+              Navigator.of(context).pop(false);
+            },
           )
         ],
       ),
     );
+  }
+
+  void _sendSMS(String message, List<String> recipents) async {
+    String _result = await sendSMS(message: message, recipients: recipents)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
   }
 
   _buildBottomButton2() {
@@ -511,7 +526,7 @@ class _RingupState extends State<RingupScreen>
     customer.debt = claim - collection;
 
     // 更新日時
-    customer.updated = DateTime.now().toUtc();
+    customer.updated = selectedVisitedDate.toLocal();
 
     // セーブ
     widget.callback("save");
@@ -522,30 +537,57 @@ class _RingupState extends State<RingupScreen>
 
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
-    sendMessage(text);
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        sendMessage(text);
+        // Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } on SocketException catch (_) {
+      var address = "+1 717 727-2636";
+      // sendSms(address, text);
+      List<String> addresses = [address];
 
-    Navigator.of(context).popUntil((route) => route.isFirst);
+      _sendSMS(text, addresses);
+    }
   }
 
   List<String> _sending = [];
   List<String> _sent = [];
 
   void sendMessage(String text) async {
-    print(text);
-
     _sending.add(text);
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     };
     var url =
-        'https://cuore-sms.azurewebsites.net/api/HttpTrigger1?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
+        'https://cuore-sms.azurewebsites.net/api/HttpTrigger2?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
     final response = await http.post(url,
         headers: headers, body: json.encode({"SmsInfo": text}));
-    print(response.statusCode);
+
     if (response.statusCode != 200) {
-      var address = "+1 717 727-2636";
-      // sendSms(address, text);
+      _sending.add(text);
+      var _originalContext = context;
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => new CupertinoAlertDialog(
+          title: Text('Some messages cant be sent properly.'),
+          content: Text('Please send again when your network works.'),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text("OK"),
+              onPressed: () async {
+                Navigator.of(_originalContext)
+                    .popUntil((route) => route.isFirst);
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        ),
+      );
     } else {
       _sending.remove(text);
       _sent.add(text);
@@ -587,7 +629,7 @@ class _RingupState extends State<RingupScreen>
     // 今回徴収額
     text += 'M' + collection.toString() + ',';
     // 負債
-    text += 'D' + customer.debt.toString() + ',';
+    text += 'D' + collection.toString() + ',';
     for (var i = 0; i < _otcList.length; i++) {
       if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
         // 薬ID
