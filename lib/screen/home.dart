@@ -1,14 +1,21 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+
 // import 'package:barcode_scan/barcode_scan.dart';
 import 'package:cuore/sl/googlesheets.dart';
 import 'package:cuore/profile/app.dart';
 import 'package:cuore/sl/message.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:cuore/repository/sheet.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cuore/sl/helpers.dart';
 
 /// Show customers list.
 class HomeScreen extends StatefulWidget {
@@ -42,6 +49,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
   List<CustomerData> _customerList;
+  List<String> _failedMessages;
 
   TextEditingController _textEditingController = new TextEditingController();
 
@@ -65,9 +73,16 @@ class _WhatsAppHomeState extends State<HomeScreen>
     var items = await CustomerDb.loadItemFromSheets(false);
     var list = await CustomerDb.loadFromSheets(userName, items, false);
 
+    final prefs = await SharedPreferences.getInstance();
+
+    var failedMessages = prefs.getStringList('failedMessages');
+
+    print('failed Messages at home ' + failedMessages.toString());
+
     setState(() {
       _customerList = list;
       _searchedList = list;
+      _failedMessages = failedMessages;
     });
   }
 
@@ -126,7 +141,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
               icon: Icon(Icons.account_circle),
             ),
             autocorrect: false,
-            autofocus: true,
+            autofocus: false,
             keyboardType: TextInputType.text,
           ),
           RaisedButton(
@@ -160,51 +175,135 @@ class _WhatsAppHomeState extends State<HomeScreen>
                     applicationVersion: "Test version",
                   )),
           Divider(),
+          _showFailedMessages()
           // _createSignOutItem(context),
         ],
       ),
     );
   }
 
-  Widget _createHeader(context) {
-    return DrawerHeader(
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-      ),
-      child: Center(
-        child: InkWell(
-          onTap: () => _handleProfile(context),
+  _showFailedMessages() {
+    if (_failedMessages != null && _failedMessages.length > 0) {
+      return Container(
+          height: 350,
+          margin: EdgeInsets.all(10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              SizedBox(height: 10),
-              // CircleAvatar(
-              //   backgroundImage: NetworkImage(
-              //     userImageUrl,
-              //   ),
-              //   radius: 30,
-              //   backgroundColor: Colors.transparent,
-              // ),
-              SizedBox(height: 10),
+            children: [
               Text(
-                userName,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.deepPurple,
-                    fontWeight: FontWeight.bold),
+                'Failed Messages',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              // SizedBox(height: 10),
-              // Text(
-              //   userEmail,
-              //   style: TextStyle(
-              //       fontSize: 16,
-              //       color: Colors.deepPurple,
-              //       fontWeight: FontWeight.bold),
-              // ),
+              Expanded(
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  reverse: false,
+                  itemCount: _failedMessages.length,
+                  itemBuilder: (context, i) => _buildFailedMessageItem(i),
+                ),
+              )
             ],
+          ));
+    }else{
+      return SizedBox();
+    }
+  }
+
+  Widget _buildFailedMessageItem(int i) {
+    var message = _failedMessages[i];
+
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(children: [
+          Text(message),
+          OutlineButton(child: Text('Resend'), onPressed: () async {
+            int result = await HelperFunction().sendSms(message);
+            if(result != 200){
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => new CupertinoAlertDialog(
+                  title: Text('Some messages cant be sent properly.'),
+                  content: Text('Please send again when your network works.'),
+                  actions: [
+                    CupertinoDialogAction(
+                      isDefaultAction: true,
+                      child: Text("OK"),
+                      onPressed: () async {
+                        Navigator.of(context).pop(false);
+                      },
+                    )
+                  ],
+                ),
+              );
+            }else{
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => new CupertinoAlertDialog(
+                  title: Text('Message sent'),
+                  actions: [
+                    CupertinoDialogAction(
+                      isDefaultAction: true,
+                      child: Text("OK"),
+                      onPressed: () async {
+                        Navigator.of(context).pop(false);
+                      },
+                    )
+                  ],
+                ),
+              );
+
+              dynamic updatedFailedMessages = _failedMessages.where( (e) {
+                return e != message;
+              }).toList();
+
+              final prefs = await SharedPreferences.getInstance();
+
+              prefs.setStringList('failedMessages', updatedFailedMessages);
+
+              setState(() {
+                _failedMessages = updatedFailedMessages;
+              });
+            }
+          })
+        ]),
+      ),
+    );
+  }
+
+  Widget _createHeader(context) {
+    return SafeArea(
+      child: Container(
+        margin: EdgeInsets.only(top: 20),
+        child: Center(
+          child: InkWell(
+            onTap: () => _handleProfile(context),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // CircleAvatar(
+                //   backgroundImage: NetworkImage(
+                //     userImageUrl,
+                //   ),
+                //   radius: 30,
+                //   backgroundColor: Colors.transparent,
+                // ),
+                Text(
+                  userName,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.deepPurple,
+                      fontWeight: FontWeight.bold),
+                ),
+                // SizedBox(height: 10),
+                // Text(
+                //   userEmail,
+                //   style: TextStyle(
+                //       fontSize: 16,
+                //       color: Colors.deepPurple,
+                //       fontWeight: FontWeight.bold),
+                // ),
+              ],
+            ),
           ),
         ),
       ),
@@ -420,12 +519,11 @@ class _WhatsAppHomeState extends State<HomeScreen>
                         child: new Text('All villages'),
                       ),
                       ...(_customerVillages.map((village) {
-                          return new DropdownMenuItem<String>(
-                            value: village,
-                            child: new Text(village),
-                          );
-                        }).toList()
-                      )
+                        return new DropdownMenuItem<String>(
+                          value: village,
+                          child: new Text(village),
+                        );
+                      }).toList())
                     ],
                     onChanged: _handleVillageChanged,
                   ),
@@ -445,7 +543,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
     _mainInputController.text = '';
 
-    if(village.toLowerCase() == 'all'){
+    if (village.toLowerCase() == 'all') {
       return setState(() {
         _selectedVillage = village;
         _searchedList = _customerList;
@@ -479,8 +577,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
         searchedList.add(customer);
       }
     }
-    if (text.length == 0 &&
-        searchedList.length == 0 ) {
+    if (text.length == 0 && searchedList.length == 0) {
       searchedList = _customerList;
     }
     setState(() {

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
@@ -11,9 +12,11 @@ import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_sms/flutter_sms.dart';
+import 'package:cuore/sl/helpers.dart';
 
 // import 'package:sms/sms.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
@@ -162,8 +165,7 @@ class _RingupState extends State<RingupScreen>
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.all(
-                  Radius.circular(5.0) //
+              borderRadius: BorderRadius.all(Radius.circular(5.0) //
                   ),
             ),
             child: Row(
@@ -552,23 +554,25 @@ class _RingupState extends State<RingupScreen>
     }
   }
 
-  List<String> _sending = [];
   List<String> _sent = [];
 
   void sendMessage(String text) async {
-    _sending.add(text);
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    };
-    var url =
-        'https://cuore-sms.azurewebsites.net/api/HttpTrigger2?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
-    final response = await http.post(url,
-        headers: headers, body: json.encode({"SmsInfo": text}));
+    final prefs = await SharedPreferences.getInstance();
 
-    if (response.statusCode != 200) {
-      _sending.add(text);
+    List<String> failedMessages =  prefs.getStringList('failedMessages');
+
+    failedMessages.add(text);
+
+    int result = await HelperFunction().sendSms(text);
+
+    print(result.toString());
+
+    if (result != 200) {
       var _originalContext = context;
+
+      print('failed message' + failedMessages.toString());
+
+      prefs.setStringList('failedMessages', failedMessages);
 
       showDialog(
         context: context,
@@ -589,11 +593,11 @@ class _RingupState extends State<RingupScreen>
         ),
       );
     } else {
-      _sending.remove(text);
+      failedMessages.remove(text);
+      prefs.setStringList('failedMessages', failedMessages);
       _sent.add(text);
     }
-    print(_sending);
-    print(_sent);
+    // print(_sent);
   }
 
   void sendSms(String address, String text) {
