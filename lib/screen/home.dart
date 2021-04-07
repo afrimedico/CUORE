@@ -73,16 +73,11 @@ class _WhatsAppHomeState extends State<HomeScreen>
     var items = await CustomerDb.loadItemFromSheets(false);
     var list = await CustomerDb.loadFromSheets(userName, items, false);
 
-    final prefs = await SharedPreferences.getInstance();
-
-    var failedMessages = prefs.getStringList('failedMessages');
-
-    print('failed Messages at home ' + failedMessages.toString());
+    await reloadFailedMessage();
 
     setState(() {
       _customerList = list;
       _searchedList = list;
-      _failedMessages = failedMessages;
     });
   }
 
@@ -92,6 +87,16 @@ class _WhatsAppHomeState extends State<HomeScreen>
       await CustomerDb.saveAsSheets(_customerList);
       await reload();
     }
+  }
+
+  Future reloadFailedMessage() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    var failedMessages = prefs.getStringList('failedMessages');
+    
+    setState(() {
+      _failedMessages = failedMessages;
+    });
   }
 
   ///
@@ -185,8 +190,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
   _showFailedMessages() {
     if (_failedMessages != null && _failedMessages.length > 0) {
       return Container(
-          height: 350,
           margin: EdgeInsets.all(10),
+          height: 320,
           child: Column(
             children: [
               Text(

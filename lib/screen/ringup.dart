@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
   RingupScreen({this.customer, this.callback});
+
   Function(String) callback;
 
   CustomerData customer;
@@ -154,13 +155,13 @@ class _RingupState extends State<RingupScreen>
       padding: EdgeInsets.all(10),
       child: Row(
         children: [
-          SizedBox(width: 15, height: 10),
+          SizedBox(width: 5, height: 10),
           Text(
             'Visit date',
             style: new TextStyle(fontSize: 16.0),
           ),
           SizedBox(
-            width: 30,
+            width: 40,
           ),
           Container(
             decoration: BoxDecoration(
@@ -173,9 +174,12 @@ class _RingupState extends State<RingupScreen>
                 SizedBox(
                   width: 5,
                 ),
-                Text("${selectedVisitedDate.toLocal()}".split(' ')[0],
-                    style: new TextStyle(
-                        fontSize: 16.0, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("${selectedVisitedDate.toLocal()}".split(' ')[0],
+                      style: new TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
                 SizedBox(
                   width: 5,
                 ),
@@ -559,17 +563,15 @@ class _RingupState extends State<RingupScreen>
   void sendMessage(String text) async {
     final prefs = await SharedPreferences.getInstance();
 
-    List<String> failedMessages =  prefs.getStringList('failedMessages');
+    List<String> failedMessages = prefs.getStringList('failedMessages');
 
     failedMessages.add(text);
 
     int result = await HelperFunction().sendSms(text);
 
-    print(result.toString());
+    var _originalContext = context;
 
     if (result != 200) {
-      var _originalContext = context;
-
       print('failed message' + failedMessages.toString());
 
       prefs.setStringList('failedMessages', failedMessages);
@@ -596,7 +598,25 @@ class _RingupState extends State<RingupScreen>
       failedMessages.remove(text);
       prefs.setStringList('failedMessages', failedMessages);
       _sent.add(text);
+      Navigator.of(_originalContext).popUntil((route) => route.isFirst);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => new CupertinoAlertDialog(
+          title: Text('Message sent'),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text("OK"),
+              onPressed: () async {
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        ),
+      );
     }
+
+    widget.callback('reloadFailedMessage');
     // print(_sent);
   }
 
