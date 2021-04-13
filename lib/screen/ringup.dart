@@ -645,7 +645,14 @@ class _RingupState extends State<RingupScreen>
   Future<String> getSmsText(customer, _otcList, collection) async {
     // 送信者
     var user = await App.getProfile();
-    var text = '@' + user['name'] + ',';
+
+    var name = '';
+
+    if(user != null){
+       name = user['name'];
+    }
+
+    var text = '@' +name + ',';
     // 顧客名
     text += 'N' + customer.name + ',';
     // 日付
