@@ -1,4 +1,6 @@
+import 'dart:collection';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cuore/profile/app.dart';
@@ -9,13 +11,17 @@ import 'package:cuore/screen/home.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+import 'package:cuore/sl/helpers.dart';
 
 // import 'package:sms/sms.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
   RingupScreen({this.customer, this.callback});
+
   Function(String) callback;
 
   CustomerData customer;
@@ -149,29 +155,31 @@ class _RingupState extends State<RingupScreen>
       padding: EdgeInsets.all(10),
       child: Row(
         children: [
-          SizedBox(width: 15, height: 10),
+          SizedBox(width: 5, height: 10),
           Text(
             'Visit date',
             style: new TextStyle(fontSize: 16.0),
           ),
           SizedBox(
-            width: 30,
+            width: 40,
           ),
           Container(
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.all(
-                  Radius.circular(5.0) //
-              ),
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.all(Radius.circular(5.0) //
+                  ),
             ),
             child: Row(
               children: [
                 SizedBox(
                   width: 5,
                 ),
-                Text("${selectedVisitedDate.toLocal()}".split(' ')[0],
-                    style: new TextStyle(
-                        fontSize: 16.0, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("${selectedVisitedDate.toLocal()}".split(' ')[0],
+                      style: new TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                ),
                 SizedBox(
                   width: 5,
                 ),
@@ -281,23 +289,23 @@ class _RingupState extends State<RingupScreen>
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                label('Billing'),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                labelColor(claim.toString(), Colors.red[300]),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     label('Billing'),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     labelColor(claim.toString(), Colors.red[300]),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //   ],
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -315,23 +323,23 @@ class _RingupState extends State<RingupScreen>
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                label('Remaining'),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                labelColor(next.toString(), Colors.red[300]),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     label('Remaining'),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //     labelColor(next.toString(), Colors.red[300]),
+            //     Padding(
+            //       padding: EdgeInsets.all(8.0),
+            //     ),
+            //   ],
+            // ),
           ],
         ));
   }
@@ -369,6 +377,41 @@ class _RingupState extends State<RingupScreen>
   void _handleSubmitted(String text) {
     // _textController.clear();
     collection = int.parse(text);
+  }
+
+  _showConfirmCustomerDialog() {
+    var _originalContext = context;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => new CupertinoAlertDialog(
+        title: new Text(customer.name),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text("Send"),
+            onPressed: () async {
+              await _handleDone();
+              Navigator.of(context).pop(false);
+            },
+          ),
+          CupertinoDialogAction(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.of(_originalContext).popUntil((route) => route.isFirst);
+              Navigator.of(context).pop(false);
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void _sendSMS(String message, List<String> recipents) async {
+    String _result = await sendSMS(message: message, recipients: recipents)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
   }
 
   _buildBottomButton2() {
@@ -411,9 +454,9 @@ class _RingupState extends State<RingupScreen>
             fit: FlexFit.tight,
             flex: 2,
             child: RaisedButton(
-              onPressed: () async {
+              onPressed: () {
                 if (collection >= 0) {
-                  await _handleDone();
+                  _showConfirmCustomerDialog();
                 }
               },
               color: (collection >= 0) ? Colors.blue : Colors.white,
@@ -489,7 +532,7 @@ class _RingupState extends State<RingupScreen>
     customer.debt = claim - collection;
 
     // 更新日時
-    customer.updated = DateTime.now().toUtc();
+    customer.updated = selectedVisitedDate.toLocal();
 
     // セーブ
     widget.callback("save");
@@ -500,36 +543,81 @@ class _RingupState extends State<RingupScreen>
 
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
-    sendMessage(text);
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        sendMessage(text);
+        // Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } on SocketException catch (_) {
+      var address = "+1 717 727-2636";
+      // sendSms(address, text);
+      List<String> addresses = [address];
 
-    Navigator.of(context).popUntil((route) => route.isFirst);
+      _sendSMS(text, addresses);
+    }
   }
 
-  List<String> _sending = [];
   List<String> _sent = [];
 
   void sendMessage(String text) async {
-    print(text);
+    final prefs = await SharedPreferences.getInstance();
 
-    _sending.add(text);
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    };
-    var url =
-        'https://cuore-sms.azurewebsites.net/api/HttpTrigger1?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
-    final response = await http.post(url,
-        headers: headers, body: json.encode({"SmsInfo": text}));
-    print(response.statusCode);
-    if (response.statusCode != 200) {
-      var address = "+1 717 727-2636";
-      // sendSms(address, text);
+    List<String> failedMessages = prefs.getStringList('failedMessages');
+
+    failedMessages.add(text);
+
+    int result = await HelperFunction().sendSms(text);
+
+    var _originalContext = context;
+
+    if (result != 200) {
+      print('failed message' + failedMessages.toString());
+
+      prefs.setStringList('failedMessages', failedMessages);
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => new CupertinoAlertDialog(
+          title: Text('Some messages cant be sent properly.'),
+          content: Text('Please send again when your network works.'),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text("OK"),
+              onPressed: () async {
+                Navigator.of(_originalContext)
+                    .popUntil((route) => route.isFirst);
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        ),
+      );
     } else {
-      _sending.remove(text);
+      failedMessages.remove(text);
+      prefs.setStringList('failedMessages', failedMessages);
       _sent.add(text);
+      Navigator.of(_originalContext).popUntil((route) => route.isFirst);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => new CupertinoAlertDialog(
+          title: Text('Message sent'),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text("OK"),
+              onPressed: () async {
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        ),
+      );
     }
-    print(_sending);
-    print(_sent);
+
+    widget.callback('reloadFailedMessage');
+    // print(_sent);
   }
 
   void sendSms(String address, String text) {
@@ -557,7 +645,14 @@ class _RingupState extends State<RingupScreen>
   Future<String> getSmsText(customer, _otcList, collection) async {
     // 送信者
     var user = await App.getProfile();
-    var text = '@' + user['name'] + ',';
+
+    var name = '';
+
+    if(user != null){
+       name = user['name'];
+    }
+
+    var text = '@' +name + ',';
     // 顧客名
     text += 'N' + customer.name + ',';
     // 日付
@@ -565,7 +660,7 @@ class _RingupState extends State<RingupScreen>
     // 今回徴収額
     text += 'M' + collection.toString() + ',';
     // 負債
-    text += 'D' + customer.debt.toString() + ',';
+    text += 'D' + collection.toString() + ',';
     for (var i = 0; i < _otcList.length; i++) {
       if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
         // 薬ID
