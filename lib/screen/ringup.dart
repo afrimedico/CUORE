@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:cuore/profile/app.dart';
 import 'package:flutter/cupertino.dart';
@@ -563,7 +564,7 @@ class _RingupState extends State<RingupScreen>
   void sendMessage(String text) async {
     final prefs = await SharedPreferences.getInstance();
 
-    List<String> failedMessages = prefs.getStringList('failedMessages');
+    List<String> failedMessages = prefs.getStringList('failedMessages') != null ? prefs.getStringList('failedMessages')  : [] ;
 
     failedMessages.add(text);
 
@@ -660,7 +661,7 @@ class _RingupState extends State<RingupScreen>
     // 今回徴収額
     text += 'M' + collection.toString() + ',';
     // 負債
-    text += 'D' + collection.toString() + ',';
+    text += 'D' + customer.debt.toString() + ',';
     for (var i = 0; i < _otcList.length; i++) {
       if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
         // 薬ID
