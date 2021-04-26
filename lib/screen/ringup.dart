@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:cuore/profile/app.dart';
 import 'package:flutter/cupertino.dart';
@@ -563,7 +564,7 @@ class _RingupState extends State<RingupScreen>
   void sendMessage(String text) async {
     final prefs = await SharedPreferences.getInstance();
 
-    List<String> failedMessages = prefs.getStringList('failedMessages');
+    List<String> failedMessages = prefs.getStringList('failedMessages') != null ? prefs.getStringList('failedMessages')  : [] ;
 
     failedMessages.add(text);
 
