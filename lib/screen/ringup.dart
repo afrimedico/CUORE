@@ -661,7 +661,7 @@ class _RingupState extends State<RingupScreen>
     // 今回徴収額
     text += 'M' + collection.toString() + ',';
     // 負債
-    text += 'D' + collection.toString() + ',';
+    text += 'D' + customer.debt.toString() + ',';
     for (var i = 0; i < _otcList.length; i++) {
       if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
         // 薬ID
