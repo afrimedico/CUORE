@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 class HelperFunction {
   Future sendSms(String text) async {
+    print(text);
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -14,5 +15,18 @@ class HelperFunction {
         headers: headers, body: json.encode({"SmsInfo": text}));
 
     return response.statusCode;
+  }
+
+  Future checkDeviceNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // Navigator.of(context).popUntil((route) => route.isFirst);
+        return true;
+      }
+      return false;
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 }

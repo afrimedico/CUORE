@@ -544,33 +544,44 @@ class _RingupState extends State<RingupScreen>
 
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        sendMessage(text);
-        // Navigator.of(context).popUntil((route) => route.isFirst);
-      }
-    } on SocketException catch (_) {
-      var address = "+1 717 727-2636";
-      // sendSms(address, text);
-      List<String> addresses = [address];
-
-      _sendSMS(text, addresses);
-    }
+    _sendMessage(text);
   }
 
   List<String> _sent = [];
 
-  void sendMessage(String text) async {
+  void _sendMessage(String text) async {
     final prefs = await SharedPreferences.getInstance();
 
     List<String> failedMessages = prefs.getStringList('failedMessages') != null ? prefs.getStringList('failedMessages')  : [] ;
 
     failedMessages.add(text);
 
-    int result = await HelperFunction().sendSms(text);
+    var isNetworkConnected = await HelperFunction().checkDeviceNetwork();
 
     var _originalContext = context;
+
+    if(!isNetworkConnected){
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) => new CupertinoAlertDialog(
+          title: Text('Some messages cant be sent properly.'),
+          content: Text('Please send again when your network works.'),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text("OK"),
+              onPressed: () async {
+                Navigator.of(_originalContext)
+                    .popUntil((route) => route.isFirst);
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        ),
+      );
+    }
+
+    int result = await HelperFunction().sendSms(text);
 
     if (result != 200) {
       print('failed message' + failedMessages.toString());
