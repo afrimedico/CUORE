@@ -11,10 +11,15 @@ class HelperFunction {
     };
     var url =
         'https://cuore-sms.azurewebsites.net/api/HttpTrigger1?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
-    final response = await http.post(url,
-        headers: headers, body: json.encode({"SmsInfo": text}));
-
-    return response.statusCode;
+    try{
+      final response = await http.post(url,
+          headers: headers, body: json.encode({"SmsInfo": text}));
+      if (response != null && response.statusCode != null) {
+        return response.statusCode;
+      }
+    }catch(_){
+      return 0;
+    }
   }
 
   Future checkDeviceNetwork() async {

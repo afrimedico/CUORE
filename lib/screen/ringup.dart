@@ -560,32 +560,9 @@ class _RingupState extends State<RingupScreen>
 
     var _originalContext = context;
 
-    if(!isNetworkConnected){
-      return showDialog(
-        context: context,
-        builder: (BuildContext context) => new CupertinoAlertDialog(
-          title: Text('Some messages cant be sent properly.'),
-          content: Text('Please send again when your network works.'),
-          actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text("OK"),
-              onPressed: () async {
-                Navigator.of(_originalContext)
-                    .popUntil((route) => route.isFirst);
-                Navigator.of(context).pop(false);
-              },
-            )
-          ],
-        ),
-      );
-    }
-
     int result = await HelperFunction().sendSms(text);
 
-    if (result != 200) {
-      print('failed message' + failedMessages.toString());
-
+    if (result != 200 || !isNetworkConnected) {
       prefs.setStringList('failedMessages', failedMessages);
 
       showDialog(
