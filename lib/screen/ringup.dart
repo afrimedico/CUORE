@@ -244,6 +244,8 @@ class _RingupState extends State<RingupScreen>
     // 負債額
     int debt = customer.debt;
 
+    print(debt.toString());
+
     // 請求額
     int claim = use + debt;
 
@@ -527,10 +529,11 @@ class _RingupState extends State<RingupScreen>
 
     // 売上
     collection = (collection >= 0 ? collection : 0);
+
     customer.sale += collection;
 
     // 次回請求額
-    customer.debt = claim - collection;
+    customer.debt = customer.debt + collection;
 
     // 更新日時
     customer.updated = selectedVisitedDate.toLocal();
@@ -641,7 +644,8 @@ class _RingupState extends State<RingupScreen>
        name = user['name'];
     }
 
-    var text = '@' +name + ',';
+    // 送信者
+    var text = '@' + user['name'] + ',';
     // 顧客名
     text += 'N' + customer.name + ',';
     // 日付
@@ -651,15 +655,14 @@ class _RingupState extends State<RingupScreen>
     // 負債
     text += 'D' + customer.debt.toString() + ',';
     for (var i = 0; i < _otcList.length; i++) {
-      if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
-        // 薬ID
-        text += 'K' + _otcList[i].code + ',';
-        // 今回使った個数
-        text += 'U' + _otcList[i].preuse.toString() + ',';
-        // 今回追加した個数
-        text += 'A' + _otcList[i].preadd.toString() + ',';
-      }
+      // 薬ID
+      text += 'K' + _otcList[i].code + ',';
+      // 今回チェックした個数
+      text += 'C' + _otcList[i].preuse.toString() + ',';
+      // 今回追加した個数
+      text += 'A' + _otcList[i].preadd.toString() + ',';
     }
+
     return text;
   }
 
