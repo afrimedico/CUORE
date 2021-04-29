@@ -244,8 +244,6 @@ class _RingupState extends State<RingupScreen>
     // 負債額
     int debt = customer.debt;
 
-    print(debt.toString());
-
     // 請求額
     int claim = use + debt;
 
@@ -286,7 +284,7 @@ class _RingupState extends State<RingupScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                labelColor(debt.toString(), Colors.red[300]),
+                labelColor(claim.toString(), Colors.red[300]),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
@@ -533,7 +531,7 @@ class _RingupState extends State<RingupScreen>
     customer.sale += collection;
 
     // 次回請求額
-    customer.debt = customer.debt + collection;
+    customer.debt = claim - collection;
 
     // 更新日時
     customer.updated = selectedVisitedDate.toLocal();
