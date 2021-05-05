@@ -180,7 +180,7 @@ class OtcListState extends State<OtcListScreen>
       child: new Container(
         decoration: new BoxDecoration(
             color: (otc.base > 0 && otc.count == 0
-                ? Colors.greenAccent
+                ? Colors.orangeAccent
                 : otc.count > otc.base
                     ? Colors.lightBlueAccent
                     : Colors.white)),
@@ -253,7 +253,7 @@ class OtcListState extends State<OtcListScreen>
                             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             borderRadius: BorderRadius.zero,
                             minSize: 0,
-                            color: Colors.green,
+                            color: Colors.pinkAccent,
                             onPressed: () => _remove(otc),
                           ),
                           SizedBox(
@@ -264,7 +264,7 @@ class OtcListState extends State<OtcListScreen>
                             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             borderRadius: BorderRadius.zero,
                             minSize: 0,
-                            color: Colors.green,
+                            color: Colors.pinkAccent,
                             onPressed: () => _add(otc),
                           ),
                         ],

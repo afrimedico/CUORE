@@ -244,7 +244,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                     CupertinoDialogAction(
                       child: Text("Resend by SMS"),
                       onPressed: () async {
-                        var address = "+1 717 727-2636";
+                        var address = "+1 619 357 4294";
                         // sendSms(address, text);
                         List<String> addresses = [address];
 

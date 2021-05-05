@@ -74,19 +74,19 @@ class _RingupState extends State<RingupScreen>
 
   Widget body() {
     return new Column(children: <Widget>[
-      SizedBox(height: 50),
-      new Text(
-        "Details",
-        style: new TextStyle(color: Colors.black, fontSize: 16.0),
-      ),
-      new Flexible(
-        child: new ListView.builder(
-          physics: BouncingScrollPhysics(),
-          reverse: false,
-          itemCount: _otcList.length,
-          itemBuilder: (context, i) => _buildCustomerItem(i),
-        ),
-      ),
+      Spacer(),
+      // new Text(
+      //   "Details",
+      //   style: new TextStyle(color: Colors.black, fontSize: 16.0),
+      // ),
+      // new Flexible(
+      //   child: new ListView.builder(
+      //     physics: BouncingScrollPhysics(),
+      //     reverse: false,
+      //     itemCount: _otcList.length,
+      //     itemBuilder: (context, i) => _buildCustomerItem(i),
+      //   ),
+      // ),
       new Divider(height: 1.0),
       _visitDate(),
       new Divider(height: 1.0),
@@ -255,24 +255,6 @@ class _RingupState extends State<RingupScreen>
         // height: 85.0,
         child: Column(
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                label('Usage'),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                labelColor(
-                    use > 0 ? use.toString() : "         ", Colors.red[300]),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -656,7 +638,7 @@ class _RingupState extends State<RingupScreen>
       // 薬ID
       text += 'K' + _otcList[i].code + ',';
       // 今回チェックした個数
-      text += 'C' + _otcList[i].preuse.toString() + ',';
+      text += 'U' + _otcList[i].preuse.toString() + ',';
       // 今回追加した個数
       text += 'A' + _otcList[i].preadd.toString() + ',';
     }
