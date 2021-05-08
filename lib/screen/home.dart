@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:cuore/repository/sheet.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -93,7 +94,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     final prefs = await SharedPreferences.getInstance();
 
     var failedMessages = prefs.getStringList('failedMessages');
-    
+
     setState(() {
       _failedMessages = failedMessages;
     });
@@ -223,7 +224,10 @@ class _WhatsAppHomeState extends State<HomeScreen>
           Text(message),
           OutlineButton(child: Text('Resend'), onPressed: () async {
             int result = await HelperFunction().sendSms(message);
-            if(result != 200){
+
+            var isNetworkConnected = await HelperFunction().checkDeviceNetwork();
+
+            if(result != 200 || !isNetworkConnected){
               showDialog(
                 context: context,
                 builder: (BuildContext context) => new CupertinoAlertDialog(
@@ -235,6 +239,16 @@ class _WhatsAppHomeState extends State<HomeScreen>
                       child: Text("OK"),
                       onPressed: () async {
                         Navigator.of(context).pop(false);
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: Text("Resend by SMS"),
+                      onPressed: () async {
+                        var address = "+1 619 357 4294";
+                        // sendSms(address, text);
+                        List<String> addresses = [address];
+
+                        _sendSMS(message, addresses);
                       },
                     )
                   ],
@@ -273,6 +287,14 @@ class _WhatsAppHomeState extends State<HomeScreen>
         ]),
       ),
     );
+  }
+
+  void _sendSMS(String message, List<String> recipents) async {
+    String _result = await sendSMS(message: message, recipients: recipents)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
   }
 
   Widget _createHeader(context) {

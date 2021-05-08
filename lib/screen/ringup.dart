@@ -74,19 +74,19 @@ class _RingupState extends State<RingupScreen>
 
   Widget body() {
     return new Column(children: <Widget>[
-      SizedBox(height: 50),
-      new Text(
-        "Details",
-        style: new TextStyle(color: Colors.black, fontSize: 16.0),
-      ),
-      new Flexible(
-        child: new ListView.builder(
-          physics: BouncingScrollPhysics(),
-          reverse: false,
-          itemCount: _otcList.length,
-          itemBuilder: (context, i) => _buildCustomerItem(i),
-        ),
-      ),
+      Spacer(),
+      // new Text(
+      //   "Details",
+      //   style: new TextStyle(color: Colors.black, fontSize: 16.0),
+      // ),
+      // new Flexible(
+      //   child: new ListView.builder(
+      //     physics: BouncingScrollPhysics(),
+      //     reverse: false,
+      //     itemCount: _otcList.length,
+      //     itemBuilder: (context, i) => _buildCustomerItem(i),
+      //   ),
+      // ),
       new Divider(height: 1.0),
       _visitDate(),
       new Divider(height: 1.0),
@@ -231,9 +231,9 @@ class _RingupState extends State<RingupScreen>
     int sum = 0;
     for (var otc in _otcList) {
       sum += otc.count;
-      var n = otc.base - otc.count;
-      if (n > 0) {
-        use += n * otc.price;
+      // var n = otc.base - otc.count;
+      if (otc.count > 0) {
+        use += otc.count * otc.price;
       }
     }
     // // 未入力なら
@@ -262,29 +262,11 @@ class _RingupState extends State<RingupScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                label('Usage'),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                labelColor(
-                    use > 0 ? use.toString() : "         ", Colors.red[300]),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
                 label('Accounts payable'),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                labelColor(debt.toString(), Colors.red[300]),
+                labelColor(claim.toString(), Colors.red[300]),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
@@ -527,6 +509,7 @@ class _RingupState extends State<RingupScreen>
 
     // 売上
     collection = (collection >= 0 ? collection : 0);
+
     customer.sale += collection;
 
     // 次回請求額
@@ -544,37 +527,25 @@ class _RingupState extends State<RingupScreen>
 
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        sendMessage(text);
-        // Navigator.of(context).popUntil((route) => route.isFirst);
-      }
-    } on SocketException catch (_) {
-      var address = "+1 717 727-2636";
-      // sendSms(address, text);
-      List<String> addresses = [address];
-
-      _sendSMS(text, addresses);
-    }
+    _sendMessage(text);
   }
 
   List<String> _sent = [];
 
-  void sendMessage(String text) async {
+  void _sendMessage(String text) async {
     final prefs = await SharedPreferences.getInstance();
 
     List<String> failedMessages = prefs.getStringList('failedMessages') != null ? prefs.getStringList('failedMessages')  : [] ;
 
     failedMessages.add(text);
 
-    int result = await HelperFunction().sendSms(text);
+    var isNetworkConnected = await HelperFunction().checkDeviceNetwork();
 
     var _originalContext = context;
 
-    if (result != 200) {
-      print('failed message' + failedMessages.toString());
+    int result = await HelperFunction().sendSms(text);
 
+    if (result != 200 || !isNetworkConnected) {
       prefs.setStringList('failedMessages', failedMessages);
 
       showDialog(
@@ -653,7 +624,8 @@ class _RingupState extends State<RingupScreen>
        name = user['name'];
     }
 
-    var text = '@' +name + ',';
+    // 送信者
+    var text = '@' + user['name'] + ',';
     // 顧客名
     text += 'N' + customer.name + ',';
     // 日付
@@ -663,15 +635,14 @@ class _RingupState extends State<RingupScreen>
     // 負債
     text += 'D' + customer.debt.toString() + ',';
     for (var i = 0; i < _otcList.length; i++) {
-      if (_otcList[i].preuse > 0 || _otcList[i].preadd > 0) {
-        // 薬ID
-        text += 'K' + _otcList[i].code + ',';
-        // 今回使った個数
-        text += 'U' + _otcList[i].preuse.toString() + ',';
-        // 今回追加した個数
-        text += 'A' + _otcList[i].preadd.toString() + ',';
-      }
+      // 薬ID
+      text += 'K' + _otcList[i].code + ',';
+      // 今回チェックした個数
+      text += 'U' + _otcList[i].preuse.toString() + ',';
+      // 今回追加した個数
+      text += 'A' + _otcList[i].preadd.toString() + ',';
     }
+
     return text;
   }
 
