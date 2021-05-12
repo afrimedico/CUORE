@@ -230,11 +230,12 @@ class _RingupState extends State<RingupScreen>
     use = 0;
     int sum = 0;
     for (var otc in _otcList) {
-      sum += otc.add;
-      // var n = otc.base - otc.count;
+      sum += otc.count;
 
-      if (otc.add > 0) {
-        use += otc.add * otc.price;
+      var n = otc.base - otc.count;
+
+      if (n > 0) {
+        use += n * otc.price;
       }
     }
     // // 未入力なら
@@ -483,27 +484,18 @@ class _RingupState extends State<RingupScreen>
       }
     }
 
-    if (count) {
-      // 0にするケースもあるかもしれない
-      // if (caution) {
-      //   final snackBar = SnackBar(
-      //       content: Text('There are some items that are not counted.'));
-      //   _scaffoldKey.currentState.showSnackBar(snackBar);
-      //   return;
-      // }
-
-      // 在庫数
-      for (var i = 0; i < _otcList.length; i++) {
-        _otcList[i].preuse = _otcList[i].base - _otcList[i].count;
-        _otcList[i].preadd = _otcList[i].add;
-        _otcList[i].useall += _otcList[i].preuse;
-        _otcList[i].addall += _otcList[i].preadd;
-        _otcList[i].base = _otcList[i].count + _otcList[i].add;
-        _otcList[i].count = 0;
-        _otcList[i].add = 0;
-      }
-      customer.otcList = _otcList;
+    for (var i = 0; i < _otcList.length; i++) {
+      _otcList[i].preuse = _otcList[i].base - _otcList[i].count;
+      _otcList[i].preadd = _otcList[i].add;
+      _otcList[i].useall += _otcList[i].preuse;
+      _otcList[i].addall += _otcList[i].preadd;
+      _otcList[i].base = _otcList[i].count + _otcList[i].add;
+      _otcList[i].count = 0;
+      _otcList[i].add = 0;
     }
+    customer.otcList = _otcList;
+
+    print(customer.otcList.toString());
 
     // 請求額
     int claim = use + customer.debt;
