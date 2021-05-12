@@ -230,10 +230,11 @@ class _RingupState extends State<RingupScreen>
     use = 0;
     int sum = 0;
     for (var otc in _otcList) {
-      sum += otc.count;
+      sum += otc.add;
       // var n = otc.base - otc.count;
-      if (otc.count > 0) {
-        use += otc.count * otc.price;
+
+      if (otc.add > 0) {
+        use += otc.add * otc.price;
       }
     }
     // // 未入力なら
