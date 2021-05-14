@@ -154,7 +154,7 @@ class OtcListState extends State<OtcListScreen>
         context,
         MaterialPageRoute(
             builder: (context) => new RingupScreen(
-                customer: customer, callback: widget.callback)));
+                customer: customer, callback: widget.callback,status: 1,)));
   }
 
   _onBack() {

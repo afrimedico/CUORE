@@ -19,26 +19,32 @@ import 'package:cuore/sl/helpers.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
-  RingupScreen({this.customer, this.callback});
+  RingupScreen({this.customer, this.callback,this.status});
 
   Function(String) callback;
+
+  int status;
 
   CustomerData customer;
 
   @override
-  _RingupState createState() => new _RingupState(customer: this.customer);
+  _RingupState createState() => new _RingupState(customer: this.customer,status: this.status);
 }
 
 class _RingupState extends State<RingupScreen>
     with SingleTickerProviderStateMixin {
   CustomerData customer;
+
+  int status;
+
   List<OtcData> _otcList;
 
   DateTime selectedVisitedDate = DateTime.now();
 
-  _RingupState({this.customer});
+  _RingupState({this.customer,this.status});
 
   @override
   void initState() {
@@ -238,6 +244,12 @@ class _RingupState extends State<RingupScreen>
         use += n * otc.price;
       }
     }
+
+    // User go to checkout page directly
+    if(status == 1){
+        use = 0;
+    }
+
     // // 未入力なら
     // if (sum == 0) {
     //   use = 0;
@@ -484,16 +496,18 @@ class _RingupState extends State<RingupScreen>
       }
     }
 
-    for (var i = 0; i < _otcList.length; i++) {
-      _otcList[i].preuse = _otcList[i].base - _otcList[i].count;
-      _otcList[i].preadd = _otcList[i].add;
-      _otcList[i].useall += _otcList[i].preuse;
-      _otcList[i].addall += _otcList[i].preadd;
-      _otcList[i].base = _otcList[i].count + _otcList[i].add;
-      _otcList[i].count = 0;
-      _otcList[i].add = 0;
+    if(status !=1){
+      for (var i = 0; i < _otcList.length; i++) {
+        _otcList[i].preuse = _otcList[i].base - _otcList[i].count;
+        _otcList[i].preadd = _otcList[i].add;
+        _otcList[i].useall += _otcList[i].preuse;
+        _otcList[i].addall += _otcList[i].preadd;
+        _otcList[i].base = _otcList[i].count + _otcList[i].add;
+        _otcList[i].count = 0;
+        _otcList[i].add = 0;
+      }
+      customer.otcList = _otcList;
     }
-    customer.otcList = _otcList;
 
     print(customer.otcList.toString());
 
