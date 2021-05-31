@@ -19,26 +19,32 @@ import 'package:cuore/sl/helpers.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
-  RingupScreen({this.customer, this.callback});
+  RingupScreen({this.customer, this.callback,this.status});
 
   Function(String) callback;
+
+  int status;
 
   CustomerData customer;
 
   @override
-  _RingupState createState() => new _RingupState(customer: this.customer);
+  _RingupState createState() => new _RingupState(customer: this.customer,status: this.status);
 }
 
 class _RingupState extends State<RingupScreen>
     with SingleTickerProviderStateMixin {
   CustomerData customer;
+
+  int status;
+
   List<OtcData> _otcList;
 
   DateTime selectedVisitedDate = DateTime.now();
 
-  _RingupState({this.customer});
+  _RingupState({this.customer,this.status});
 
   @override
   void initState() {
@@ -231,11 +237,19 @@ class _RingupState extends State<RingupScreen>
     int sum = 0;
     for (var otc in _otcList) {
       sum += otc.count;
-      // var n = otc.base - otc.count;
-      if (otc.count > 0) {
-        use += otc.count * otc.price;
+
+      var n = otc.base - otc.count;
+
+      if (n > 0) {
+        use += n * otc.price;
       }
     }
+
+    // User go to checkout page directly
+    if(status == 1){
+        use = 0;
+    }
+
     // // 未入力なら
     // if (sum == 0) {
     //   use = 0;
@@ -248,7 +262,7 @@ class _RingupState extends State<RingupScreen>
     int claim = use + debt;
 
     // 次回請求額
-    int next = claim - (collection >= 0 ? collection : 0);
+    int next = claim - (collection != -1 ? collection : 0);
 
     return Container(
         width: MediaQuery.of(context).size.width,
@@ -438,11 +452,11 @@ class _RingupState extends State<RingupScreen>
             flex: 2,
             child: RaisedButton(
               onPressed: () {
-                if (collection >= 0) {
+                if (collection != -1) {
                   _showConfirmCustomerDialog();
                 }
               },
-              color: (collection >= 0) ? Colors.blue : Colors.white,
+              color: (collection != -1) ? Colors.blue : Colors.white,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -455,9 +469,9 @@ class _RingupState extends State<RingupScreen>
                       width: 4.0,
                     ),
                     Text(
-                      (collection >= 0) ? "Ring up" : "(Input collection)",
+                      (collection != -1) ? "Ring up" : "(Input collection)",
                       style: TextStyle(
-                        color: (collection >= 0) ? Colors.white : Colors.black,
+                        color: (collection != -1 ) ? Colors.white : Colors.black,
                       ),
                     ),
                   ],
@@ -482,16 +496,7 @@ class _RingupState extends State<RingupScreen>
       }
     }
 
-    if (count) {
-      // 0にするケースもあるかもしれない
-      // if (caution) {
-      //   final snackBar = SnackBar(
-      //       content: Text('There are some items that are not counted.'));
-      //   _scaffoldKey.currentState.showSnackBar(snackBar);
-      //   return;
-      // }
-
-      // 在庫数
+    if(status !=1){
       for (var i = 0; i < _otcList.length; i++) {
         _otcList[i].preuse = _otcList[i].base - _otcList[i].count;
         _otcList[i].preadd = _otcList[i].add;
@@ -504,11 +509,13 @@ class _RingupState extends State<RingupScreen>
       customer.otcList = _otcList;
     }
 
+    print(customer.otcList.toString());
+
     // 請求額
     int claim = use + customer.debt;
 
     // 売上
-    collection = (collection >= 0 ? collection : 0);
+    collection = (collection ?? 0);
 
     customer.sale += collection;
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 // import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/components/parts.dart';
@@ -187,116 +188,97 @@ class OtcListState2 extends State<OtcListScreen2>
                 title: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Row(
-                      children: [
-                        Text(
-                          (i + 1).toString(),
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        CircleAvatar(
-                          backgroundImage: Image.asset(
-                              "assets/animals/" + otc.key + ".png",
-                              height: 100)
-                              .image,
-                          radius: 30,
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ],
-                    ),
                     new Flexible(
                       flex: 1,
                       child: new Text(
                         otc.name,
                         style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      ),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: new Text(
-                        (otc.count + otc.add).toString(),
-                        style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 28.0),
-                      ),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: Text("+" + otc.add.toString()),
-                    ),
-                    // new Text(
-                    //   'add: ' + otc.add.toString(),
-                    //   style: new TextStyle(color: Colors.black, fontSize: 16.0),
-                    // ),
-                    // new Flexible(
-                    //   flex: 1,
-                    //   child: SizedBox(
-                    //     width: 80, // specific value
-                    //     height: 60,
-                    //     child: RaisedButton.icon(
-                    //       icon: Icon(
-                    //         Icons.remove,
-                    //         color: Colors.white,
-                    //       ),
-                    //       label: Text(
-                    //         "1",
-                    //         style: new TextStyle(
-                    //             fontWeight: FontWeight.bold, fontSize: 24.0),
-                    //       ),
-                    //       onPressed: () {
-                    //         _remove(otc);
-                    //       },
-                    //       color: Colors.lightGreen,
-                    //       textColor: Colors.white,
-                    //     ),
-                    //   ),
-                    // ),
-                    // new Flexible(
-                    //   flex: 1,
-                    //   child: SizedBox(
-                    //     width: 80, // specific value
-                    //     height: 60,
-                    //     child: RaisedButton.icon(
-                    //       icon: Icon(
-                    //         Icons.add,
-                    //         color: Colors.white,
-                    //       ),
-                    //       label: Text(
-                    //         "1",
-                    //         style: new TextStyle(
-                    //             fontWeight: FontWeight.bold, fontSize: 24.0),
-                    //       ),
-                    //       onPressed: () {
-                    //         _add(otc);
-                    //       },
-                    //       color: Colors.green,
-                    //       textColor: Colors.white,
-                    //     ),
-                    //   ),
-                    // ),
-                    new Flexible(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 50,
-                        child: Parts().renderIconButton(Icons.remove, () {
-                          _remove(otc);
-                        }),
-                      ),
-                    ),
-                    new Flexible(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 50,
-                        child: Parts().renderIconButton(Icons.add, () {
-                          _add(otc);
-                        }),
+                            fontWeight: FontWeight.bold, fontSize: 16.0),
                       ),
                     ),
                   ],
                 ),
+                subtitle: Container(
+                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            (otc.count + otc.add).toString(),
+                            style: new TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 28.0),
+                          ),
+                          SizedBox(
+                            width:5
+                          ),
+                          Text("+ " + otc.add.toString() ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            child: CupertinoButton(
+                              child: Text('-'),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              borderRadius: BorderRadius.zero,
+                              minSize: 0,
+                              color: Colors.green,
+                              onPressed: () => _remove(otc),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: 50,
+                            child: CupertinoButton(
+                              child: Text('+'),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              borderRadius: BorderRadius.zero,
+                              minSize: 0,
+                              color: Colors.green,
+                              onPressed: () => _add(otc),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                leading: SizedBox(
+                  width: 75,
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        (i + 1).toString(),
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      SizedBox(
+                        width: 40,
+                        child: CircleAvatar(
+                          backgroundImage: Image.asset(
+                                  "assets/animals/" + otc.key + ".png",
+                                  height: 100)
+                              .image,
+                          radius: 30,
+                          backgroundColor: Colors.transparent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 // subtitle: Text(otc.base.toString()),
               ),
             ],

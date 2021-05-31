@@ -154,7 +154,7 @@ class OtcListState extends State<OtcListScreen>
         context,
         MaterialPageRoute(
             builder: (context) => new RingupScreen(
-                customer: customer, callback: widget.callback)));
+                customer: customer, callback: widget.callback,status: 1,)));
   }
 
   _onBack() {
@@ -248,24 +248,30 @@ class OtcListState extends State<OtcListScreen>
                       ),
                       Row(
                         children: [
-                          CupertinoButton(
-                            child: Text('-'),
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            borderRadius: BorderRadius.zero,
-                            minSize: 0,
-                            color: Colors.pinkAccent,
-                            onPressed: () => _remove(otc),
+                          SizedBox(
+                            width:50,
+                            child: CupertinoButton(
+                              child: Text('-'),
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              borderRadius: BorderRadius.zero,
+                              minSize: 0,
+                              color: Colors.pinkAccent,
+                              onPressed: () => _remove(otc),
+                            ),
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          CupertinoButton(
-                            child: Text('+'),
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            borderRadius: BorderRadius.zero,
-                            minSize: 0,
-                            color: Colors.pinkAccent,
-                            onPressed: () => _add(otc),
+                          SizedBox(
+                            width:50,
+                            child: CupertinoButton(
+                              child: Text('+'),
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              borderRadius: BorderRadius.zero,
+                              minSize: 0,
+                              color: Colors.pinkAccent,
+                              onPressed: () => _add(otc),
+                            ),
                           ),
                         ],
                       )
