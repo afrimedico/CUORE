@@ -24,10 +24,10 @@ class SLMessageDelegate extends LocalizationsDelegate {
 
 class SLMessage {
   // ロケール
-  static Locale locale;
+  static late Locale locale;
 
   // メッセージデータ
-  static List<List<dynamic>> message_data = null;
+  static List<List<dynamic>>? message_data = null;
 
   static Future loadAsset() async {
     message_data = await SLAssetService.loadCsv('assets/data/message.csv');
@@ -38,9 +38,9 @@ class SLMessage {
     return SLMessage();
   }
 
-  static int getLocaleIndex(String locale) {
+  static int getLocaleIndex(String? locale) {
     var id = 0;
-    for (var m in message_data[0]) {
+    for (var m in message_data![0]) {
       if (locale == m) {
         return id;
       }
@@ -49,11 +49,11 @@ class SLMessage {
     return 1; // ja
   }
 
-  static String getMessage(String locale, String key) {
+  static String getMessage(String? locale, String key) {
     // locale = 'ja';
     if (message_data != null) {
       var id = getLocaleIndex(locale);
-      for (var m in message_data) {
+      for (var m in message_data!) {
         if (m[0] == key && id < m.length) {
           String s = m[id];
           return s.replaceAll('\\n', '\n');

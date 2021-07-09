@@ -1,15 +1,14 @@
-
 class OtcData {
   OtcData(
-      {this.key,
-      this.name,
-      this.code,
-      this.price,
-      this.base,
-      this.preuse,
-      this.preadd,
-      this.useall,
-      this.addall});
+      {this.key = '',
+      this.name = '',
+      this.code = '',
+      this.price = 0,
+      this.base = 0,
+      this.preuse = 0,
+      this.preadd = 0,
+      this.useall = 0,
+      this.addall = 0});
 
   // 薬名
   String key;

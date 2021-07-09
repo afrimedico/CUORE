@@ -12,7 +12,7 @@ class HelperFunction {
     var url =
         'https://cuore-sms.azurewebsites.net/api/HttpTrigger1?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
     try{
-      final response = await http.post(url,
+      final response = await http.post(url as Uri,
           headers: headers, body: json.encode({"SmsInfo": text}));
       if (response != null && response.statusCode != null) {
         return response.statusCode;

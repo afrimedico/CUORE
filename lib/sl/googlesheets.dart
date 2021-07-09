@@ -12,7 +12,7 @@ class Sheets {
     }
   }
 
-  static Future<Map<String, dynamic>> load(
+  static Future<Map<String, dynamic>?> load(
       sheetId, range, String name, bool fromServer) async {
     final file = await getFilePath(name);
 

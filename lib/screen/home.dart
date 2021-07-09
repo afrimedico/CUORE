@@ -1,22 +1,19 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 
-// import 'package:barcode_scan/barcode_scan.dart';
-import 'package:cuore/sl/googlesheets.dart';
 import 'package:cuore/profile/app.dart';
-import 'package:cuore/sl/message.dart';
+import 'package:cuore/repository/otc.dart';
+import 'package:cuore/repository/sheet.dart';
+import 'package:cuore/screen/add_customer.dart';
+import 'package:cuore/screen/otclist.dart';
+import 'package:cuore/sl/googlesheets.dart';
+import 'package:cuore/sl/helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cuore/repository/otc.dart';
-import 'package:cuore/screen/otclist.dart';
-import 'package:cuore/repository/sheet.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cuore/sl/helpers.dart';
 
 /// Show customers list.
 class HomeScreen extends StatefulWidget {
@@ -27,30 +24,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class CustomerData {
-  CustomerData({this.place, this.name});
+  CustomerData({this.place, this.name, this.station});
 
-  String place;
-  String name;
-  List<OtcData> otcList = List<OtcData>();
-  int sale;
-  int debt;
-  DateTime updated;
-  String box;
+  String? place;
+  String? name;
+  String? station;
+  List<OtcData>? otcList = <OtcData>[];
+  int sale = 0;
+  int debt = 0;
+  DateTime updated = DateTime.now();
+  String? box;
 
   void log() {
-    print(name);
-    print(sale);
-    print(debt);
-    print(updated);
-    print(box);
+    // print(name);
+    // print(sale);
+    // print(debt);
+    // print(updated);
+    // print(box);
+    print('DuongTuan: $place $station');
   }
 }
 
 class _WhatsAppHomeState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  List<CustomerData> _customerList;
-  List<String> _failedMessages;
+  TabController? _tabController;
+  List<CustomerData> _customerList = [];
+  List<String>? _failedMessages;
 
   TextEditingController _textEditingController = new TextEditingController();
 
@@ -69,15 +68,15 @@ class _WhatsAppHomeState extends State<HomeScreen>
     if (user['name'] != null) {
       userName = user['name'];
     }
-    _textEditingController.text = userName;
+    _textEditingController.text = userName!;
 
     var items = await CustomerDb.loadItemFromSheets(false);
-    var list = await CustomerDb.loadFromSheets(userName, items, false);
+    var list = await CustomerDb.loadFromSheets(userName!, items, false);
 
     await reloadFailedMessage();
 
     setState(() {
-      _customerList = list;
+      _customerList = list!;
       _searchedList = list;
     });
   }
@@ -90,7 +89,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
     }
   }
 
-  Future reloadFailedMessage() async{
+  Future reloadFailedMessage() async {
     final prefs = await SharedPreferences.getInstance();
 
     var failedMessages = prefs.getStringList('failedMessages');
@@ -105,7 +104,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
     Sheets.clear('items');
     Sheets.clear('customers');
     var items = await CustomerDb.loadItemFromSheets(true);
-    var list = await CustomerDb.loadFromSheets(userName, items, true);
+    var list = await (CustomerDb.loadFromSheets(userName!, items, true)
+        as FutureOr<List<CustomerData?>>);
     await CustomerDb.saveAsSheets(list);
   }
 
@@ -123,14 +123,30 @@ class _WhatsAppHomeState extends State<HomeScreen>
   Widget screen() {
     return new Scaffold(
       key: _scaffoldKey,
-      appBar: appBar(),
+      appBar: appBar() as PreferredSizeWidget?,
       body: body(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AddNewCustomer(_customerList),
+          ));
+        },
+        label: const Text(
+          'Add',
+          style: TextStyle(color: Colors.white),
+        ),
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.greenAccent,
+      ),
       drawer: showDrawer(context),
       // floatingActionButton: buildBottomNavigationBar(context, barcodeScanning),
     );
   }
 
-  String userName = "";
+  String? userName = "";
   String userNameTmp = "";
 
   Drawer showDrawer(context) {
@@ -151,7 +167,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
             keyboardType: TextInputType.text,
           ),
           RaisedButton(
-            child: const Text('Save'),
+            child: Text(AppLocalizations.of(context).save),
             color: Colors.orange,
             textColor: Colors.white,
             onPressed: () async {
@@ -167,19 +183,19 @@ class _WhatsAppHomeState extends State<HomeScreen>
           ),
           // _createDrawerItem(
           //     context, Icons.person, SLMessage.of("Profile"), () => _handleProfile(context)),
-          _createDrawerItem(
-              context,
-              Icons.info,
-              SLMessage.of("Version"),
-              () => showAboutDialog(
-                    context: context,
-                    applicationIcon: Image.asset(
-                      'assets/icons/ic_launcher.png',
-                      width: 64,
-                    ),
-                    applicationName: "CUORE",
-                    applicationVersion: "Test version",
-                  )),
+          // _createDrawerItem(
+          //     context,
+          //     Icons.info,
+          //     SLMessage.of("Version"),
+          //     () => showAboutDialog(
+          //           context: context,
+          //           applicationIcon: Image.asset(
+          //             'assets/icons/ic_launcher.png',
+          //             width: 64,
+          //           ),
+          //           applicationName: "CUORE",
+          //           applicationVersion: "Test version",
+          //         )),
           Divider(),
           _showFailedMessages()
           // _createSignOutItem(context),
@@ -189,7 +205,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
   }
 
   _showFailedMessages() {
-    if (_failedMessages != null && _failedMessages.length > 0) {
+    if (_failedMessages != null && _failedMessages!.length > 0) {
       return Container(
           margin: EdgeInsets.all(10),
           height: 320,
@@ -203,87 +219,92 @@ class _WhatsAppHomeState extends State<HomeScreen>
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   reverse: false,
-                  itemCount: _failedMessages.length,
+                  itemCount: _failedMessages!.length,
                   itemBuilder: (context, i) => _buildFailedMessageItem(i),
                 ),
               )
             ],
           ));
-    }else{
+    } else {
       return SizedBox();
     }
   }
 
   Widget _buildFailedMessageItem(int i) {
-    var message = _failedMessages[i];
+    var message = _failedMessages![i];
 
     return Card(
       child: Padding(
         padding: EdgeInsets.all(10),
         child: Column(children: [
           Text(message),
-          OutlineButton(child: Text('Resend'), onPressed: () async {
-            int result = await HelperFunction().sendSms(message);
+          OutlineButton(
+              child: Text('Resend'),
+              onPressed: () async {
+                int result =
+                    await (HelperFunction().sendSms(message) as FutureOr<int>);
 
-            var isNetworkConnected = await HelperFunction().checkDeviceNetwork();
+                var isNetworkConnected =
+                    await HelperFunction().checkDeviceNetwork();
 
-            if(result != 200 || !isNetworkConnected){
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => new CupertinoAlertDialog(
-                  title: Text('Some messages cant be sent properly.'),
-                  content: Text('Please send again when your network works.'),
-                  actions: [
-                    CupertinoDialogAction(
-                      isDefaultAction: true,
-                      child: Text("OK"),
-                      onPressed: () async {
-                        Navigator.of(context).pop(false);
-                      },
+                if (result != 200 || !isNetworkConnected) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => new CupertinoAlertDialog(
+                      title: Text('Some messages cant be sent properly.'),
+                      content:
+                          Text('Please send again when your network works.'),
+                      actions: [
+                        CupertinoDialogAction(
+                          isDefaultAction: true,
+                          child: Text("OK"),
+                          onPressed: () async {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                        CupertinoDialogAction(
+                          child: Text("Resend by SMS"),
+                          onPressed: () async {
+                            var address = "+1 619 357 4294";
+                            // sendSms(address, text);
+                            List<String> addresses = [address];
+
+                            _sendSMS(message, addresses);
+                          },
+                        )
+                      ],
                     ),
-                    CupertinoDialogAction(
-                      child: Text("Resend by SMS"),
-                      onPressed: () async {
-                        var address = "+1 619 357 4294";
-                        // sendSms(address, text);
-                        List<String> addresses = [address];
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => new CupertinoAlertDialog(
+                      title: Text('Message sent'),
+                      actions: [
+                        CupertinoDialogAction(
+                          isDefaultAction: true,
+                          child: Text("OK"),
+                          onPressed: () async {
+                            Navigator.of(context).pop(false);
+                          },
+                        )
+                      ],
+                    ),
+                  );
 
-                        _sendSMS(message, addresses);
-                      },
-                    )
-                  ],
-                ),
-              );
-            }else{
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => new CupertinoAlertDialog(
-                  title: Text('Message sent'),
-                  actions: [
-                    CupertinoDialogAction(
-                      isDefaultAction: true,
-                      child: Text("OK"),
-                      onPressed: () async {
-                        Navigator.of(context).pop(false);
-                      },
-                    )
-                  ],
-                ),
-              );
+                  dynamic updatedFailedMessages = _failedMessages!.where((e) {
+                    return e != message;
+                  }).toList();
 
-              dynamic updatedFailedMessages = _failedMessages.where( (e) {
-                return e != message;
-              }).toList();
+                  final prefs = await SharedPreferences.getInstance();
 
-              final prefs = await SharedPreferences.getInstance();
+                  prefs.setStringList('failedMessages', updatedFailedMessages);
 
-              prefs.setStringList('failedMessages', updatedFailedMessages);
-
-              setState(() {
-                _failedMessages = updatedFailedMessages;
-              });
-            }
-          })
+                  setState(() {
+                    _failedMessages = updatedFailedMessages;
+                  });
+                }
+              })
         ]),
       ),
     );
@@ -315,7 +336,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                 //   backgroundColor: Colors.transparent,
                 // ),
                 Text(
-                  userName,
+                  userName!,
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.deepPurple,
@@ -408,7 +429,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
   // Scanned barcode data.
   String barcode = "";
   String message = "";
-  var _searchedList = [];
+  List<CustomerData>? _searchedList = [];
 
 // Method for scanning barcode....
   Future barcodeScanning() async {
@@ -454,7 +475,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
       title: new GestureDetector(
         onTap: () {},
         child: Center(
-          child: Text(userName),
+          child: Text(userName!),
         ),
       ),
       actions: <Widget>[
@@ -462,7 +483,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
           icon: Icon(Icons.cached),
           onPressed: () {
             final snackBar = SnackBar(content: Text('Reloading...'));
-            _scaffoldKey.currentState.showSnackBar(snackBar);
+            _scaffoldKey.currentState!.showSnackBar(snackBar);
             reloadAndSave();
           },
         ),
@@ -476,9 +497,9 @@ class _WhatsAppHomeState extends State<HomeScreen>
       return Text("Processing...");
     }
     if (_searchedList == null) {
-      return Text('No user data: ' + userName);
+      return Text('No user data: ' + userName!);
     }
-    int len = _searchedList != null ? _searchedList.length : 0;
+    int len = _searchedList != null ? _searchedList!.length : 0;
     return new Column(children: <Widget>[
       _inputLine(),
       Text(barcode),
@@ -496,19 +517,28 @@ class _WhatsAppHomeState extends State<HomeScreen>
   final TextEditingController _mainInputController =
       new TextEditingController();
 
-  String _selectedVillage;
-  String _searchText;
+  String? _selectedVillage;
+  String? _selectedStation;
+  String? _searchText;
 
   Widget _inputLine() {
-    if (_customerList == null || _customerList.length <= 0) {
+    if (_customerList.length <= 0) {
       return Text("Processing...");
     }
 
-    List<String> _customerVillages = List();
+    List<String> _customerVillages = [];
+    List<String> _customerStation = [];
 
     _customerList.forEach((customer) {
-      if (!_customerVillages.contains(customer.place.toUpperCase())) {
-        _customerVillages.add(customer.place.toUpperCase());
+      if (!_customerVillages.contains(customer.place!.toUpperCase())) {
+        _customerVillages.add(customer.place!.toUpperCase());
+      }
+
+      if (customer.station != null) {
+        print('DuongTuan: ${customer.station}');
+        if (!_customerStation.contains(customer.station!.toUpperCase())) {
+          _customerStation.add(customer.station!.toUpperCase());
+        }
       }
     });
 
@@ -538,7 +568,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                     icon: Icon(Icons.filter_alt_rounded),
                     elevation: 10,
                     hint: Text(_selectedVillage != null
-                        ? _selectedVillage
+                        ? _selectedVillage!
                         : 'Choose an option'),
                     items: [
                       DropdownMenuItem<String>(
@@ -556,51 +586,54 @@ class _WhatsAppHomeState extends State<HomeScreen>
                   ),
                 ),
               ],
+            )),
+        Padding(
+            padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Row(
+              children: [
+                Text(
+                  'Station',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                GestureDetector(
+                  // behavior: HitTestBehavior.opaque,
+                  child: DropdownButton<String>(
+                    icon: Icon(Icons.filter_alt_rounded),
+                    elevation: 10,
+                    hint: Text(_selectedStation != null
+                        ? _selectedStation!
+                        : 'Choose an option'),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: 'All',
+                        child: new Text('All station'),
+                      ),
+                      ...(_customerStation.map((village) {
+                        return new DropdownMenuItem<String>(
+                          value: village,
+                          child: new Text(village),
+                        );
+                      }).toList())
+                    ],
+                    onChanged: _handleStationChange,
+                  ),
+                ),
+              ],
             ))
       ],
     ));
   }
 
-  void _handleVillageChanged(String village) async {
-    if (village.length == 0) {
-      return;
-    }
-
-    FocusScope.of(context).requestFocus(new FocusNode());
-
-    _mainInputController.text = '';
-
-    if (village.toLowerCase() == 'all') {
-      return setState(() {
-        _selectedVillage = village;
-        _searchedList = _customerList;
-      });
-    }
-
-    var searchedList = [];
-
-    for (int i = 0; i < _customerList.length; i++) {
-      var customer = _customerList[i];
-
-      if (customer.place.toUpperCase() == village) {
-        searchedList.add(customer);
-      }
-    }
-
-
-    setState(() {
-      _selectedVillage = village;
-      _searchedList = searchedList;
-    });
-  }
-
   void _handleMainInputChanged(String text) async {
     // _mainInputController.text = text;
-    var searchedList = [];
+    List<CustomerData> searchedList = [];
 
     for (int i = 0; i < _customerList.length; i++) {
       var customer = _customerList[i];
-      if (customer.name.toLowerCase().indexOf(text.toLowerCase()) != -1) {
+      if (customer.name!.toLowerCase().indexOf(text.toLowerCase()) != -1) {
         searchedList.add(customer);
       }
     }
@@ -613,13 +646,13 @@ class _WhatsAppHomeState extends State<HomeScreen>
     });
   }
 
-  String date(customer) {
+  String date(CustomerData customer) {
     final _formatter = DateFormat("MM/dd HH:mm");
     return _formatter.format(customer.updated.toLocal());
   }
 
   Widget _buildCustomerItem(int i) {
-    var customer = _searchedList[i];
+    var customer = _searchedList![i];
     // print("customer");
     // customer.log();
     return Padding(
@@ -639,7 +672,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     new Text(
-                      customer.name,
+                      customer.name ?? '',
                       style: new TextStyle(fontWeight: FontWeight.bold),
                     ),
                     new Text(
@@ -667,7 +700,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   void _onTap(int index) async {
     if (this.barcode.length > 0) {
-      _searchedList[index].box = this.barcode;
+      _searchedList![index].box = this.barcode;
     }
     setState(() {
       this.barcode = "";
@@ -676,6 +709,57 @@ class _WhatsAppHomeState extends State<HomeScreen>
         context,
         MaterialPageRoute(
             builder: (context) => new OtcListScreen(
-                customer: _searchedList[index], callback: callback)));
+                customer: _searchedList![index], callback: callback)));
+  }
+
+  void _handleStationChange(String? value) {
+    setState(() {
+      _selectedStation = value ?? 'ALL';
+      _searchedList =
+          filterList(_selectedVillage ?? 'ALL', _selectedStation ?? 'ALL');
+      print('DuongTuan: $_searchedList');
+    });
+    _searchedList?.forEach((element) {
+      element.log();
+    });
+  }
+
+  List<CustomerData> filterList(String village, String station) {
+    if (village.toUpperCase() == 'ALL' && station.toUpperCase() == 'ALL') {
+      return _customerList;
+    }
+
+    if (village.toUpperCase() == 'ALL' && station.toUpperCase() != 'ALL') {
+      return _customerList
+          .where(
+              (element) => element.station?.toUpperCase() == _selectedStation)
+          .toList();
+    }
+
+    if (village.toUpperCase() != 'ALL' && station.toUpperCase() == 'ALL') {
+      return _customerList
+          .where((element) => element.place?.toUpperCase() == _selectedVillage)
+          .toList();
+    }
+
+    if (village.toUpperCase() != 'ALL' && station.toUpperCase() != 'ALL') {
+      return _customerList
+          .where((element) =>
+              element.place?.toUpperCase() == _selectedVillage &&
+              element.station?.toUpperCase() == _selectedStation)
+          .toList();
+    }
+    return [];
+  }
+
+  void _handleVillageChanged(String? village) async {
+    setState(() {
+      _selectedVillage = village ?? 'ALL';
+      _searchedList =
+          filterList(_selectedVillage ?? 'ALL', _selectedStation ?? 'ALL');
+      _searchedList?.forEach((element) {
+        element.log();
+      });
+    });
   }
 }
