@@ -1,23 +1,17 @@
-import 'dart:async';
-import 'dart:io';
-// import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/components/parts.dart';
 import 'package:cuore/screen/home.dart';
-import 'package:cuore/screen/otc.dart';
 import 'package:cuore/screen/otclist2.dart';
 import 'package:cuore/screen/ringup.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 /// Show Otc list which customer has.
 class OtcListScreen extends StatefulWidget {
   OtcListScreen({this.customer, this.callback});
-  Function(String) callback;
+  Function(String)? callback;
 
-  CustomerData customer;
+  CustomerData? customer;
 
   @override
   OtcListState createState() => new OtcListState(customer: this.customer);
@@ -25,9 +19,9 @@ class OtcListScreen extends StatefulWidget {
 
 class OtcListState extends State<OtcListScreen>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  List<OtcData> _otcList;
-  CustomerData customer;
+  TabController? _tabController;
+  List<OtcData>? _otcList;
+  CustomerData? customer;
 
   OtcListState({this.customer});
 
@@ -41,7 +35,7 @@ class OtcListState extends State<OtcListScreen>
 
   void reload() async {
     setState(() {
-      _otcList = customer.otcList;
+      _otcList = customer!.otcList;
     });
   }
 
@@ -55,7 +49,7 @@ class OtcListState extends State<OtcListScreen>
   Widget screen() {
     return new Scaffold(
       key: _scaffoldKey,
-      appBar: appBar(),
+      appBar: appBar() as PreferredSizeWidget?,
       body: body(),
       floatingActionButton: buildBottomNavigationBar(context, _handleDone),
     );
@@ -91,7 +85,7 @@ class OtcListState extends State<OtcListScreen>
         onTap: () {
           // reload();
         },
-        child: Text(customer.name + ' (Count)'),
+        child: Text(customer!.name! + ' (Count)'),
       ),
       elevation: 0.7,
     );
@@ -102,14 +96,14 @@ class OtcListState extends State<OtcListScreen>
       return Text("Processing...");
     }
     if (_otcList == null) {
-      _otcList = List<OtcData>();
+      _otcList = <OtcData>[];
     }
     return new Column(children: <Widget>[
       new Flexible(
         child: new ListView.builder(
           physics: BouncingScrollPhysics(),
           reverse: false,
-          itemCount: _otcList.length,
+          itemCount: _otcList!.length,
           itemBuilder: (context, i) => _buildCustomerItem(i),
         ),
       ),
@@ -127,16 +121,16 @@ class OtcListState extends State<OtcListScreen>
       loading = true;
     });
     if (useCamera) {
-      // 撮影/選択したFileが返ってくる
-      var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-      // Androidで撮影せずに閉じた場合はnullになる
-      if (imageFile != null) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => new OtcListScreen2(
-                    customer: customer, callback: widget.callback)));
-      }
+      // // 撮影/選択したFileが返ってくる
+      // var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+      // // Androidで撮影せずに閉じた場合はnullになる
+      // if (imageFile != null) {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => new OtcListScreen2(
+      //               customer: customer, callback: widget.callback)));
+      // }
     } else {
       Navigator.push(
           context,
@@ -154,7 +148,10 @@ class OtcListState extends State<OtcListScreen>
         context,
         MaterialPageRoute(
             builder: (context) => new RingupScreen(
-                customer: customer, callback: widget.callback,status: 1,)));
+                  customer: customer,
+                  callback: widget.callback,
+                  status: 1,
+                )));
   }
 
   _onBack() {
@@ -174,7 +171,7 @@ class OtcListState extends State<OtcListScreen>
   }
 
   Widget _buildCustomerItem(int i) {
-    var otc = _otcList[i];
+    var otc = _otcList![i];
     return Padding(
       padding: new EdgeInsets.all(4.0),
       child: new Container(
@@ -185,15 +182,13 @@ class OtcListState extends State<OtcListScreen>
                     ? Colors.lightBlueAccent
                     : Colors.white)),
         child: OutlineButton(
-          padding:
-              EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
+          padding: EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               new ListTile(
                 title: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                   children: <Widget>[
                     new Flexible(
                       flex: 1,
@@ -212,7 +207,7 @@ class OtcListState extends State<OtcListScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          (i + 1).toString(),
+                        (i + 1).toString(),
                         textAlign: TextAlign.left,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -231,14 +226,13 @@ class OtcListState extends State<OtcListScreen>
                   ),
                 ),
                 subtitle: Container(
-                  margin: EdgeInsets.only(top:5,bottom:5),
+                  margin: EdgeInsets.only(top: 5, bottom: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
                           Text(otc.base.toString() + "→"),
-
                           Text(
                             otc.count.toString(),
                             style: new TextStyle(
@@ -249,10 +243,11 @@ class OtcListState extends State<OtcListScreen>
                       Row(
                         children: [
                           SizedBox(
-                            width:50,
+                            width: 50,
                             child: CupertinoButton(
                               child: Text('-'),
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
                               borderRadius: BorderRadius.zero,
                               minSize: 0,
                               color: Colors.pinkAccent,
@@ -263,10 +258,11 @@ class OtcListState extends State<OtcListScreen>
                             width: 10,
                           ),
                           SizedBox(
-                            width:50,
+                            width: 50,
                             child: CupertinoButton(
                               child: Text('+'),
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
                               borderRadius: BorderRadius.zero,
                               minSize: 0,
                               color: Colors.pinkAccent,

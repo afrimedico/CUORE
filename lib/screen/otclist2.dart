@@ -1,22 +1,17 @@
-import 'dart:async';
-import 'dart:io';
-// import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/components/parts.dart';
 import 'package:cuore/screen/home.dart';
-import 'package:cuore/screen/otc.dart';
 import 'package:cuore/screen/ringup.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 /// Show Otc list which customer has.
 class OtcListScreen2 extends StatefulWidget {
   OtcListScreen2({this.customer, this.callback});
-  Function(String) callback;
+  Function(String)? callback;
 
-  CustomerData customer;
+  CustomerData? customer;
 
   @override
   OtcListState2 createState() => new OtcListState2(customer: this.customer);
@@ -24,9 +19,9 @@ class OtcListScreen2 extends StatefulWidget {
 
 class OtcListState2 extends State<OtcListScreen2>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  List<OtcData> _otcList;
-  CustomerData customer;
+  TabController? _tabController;
+  List<OtcData>? _otcList;
+  CustomerData? customer;
 
   OtcListState2({this.customer});
 
@@ -40,7 +35,7 @@ class OtcListState2 extends State<OtcListScreen2>
 
   void reload() async {
     setState(() {
-      _otcList = customer.otcList;
+      _otcList = customer!.otcList;
     });
   }
 
@@ -54,7 +49,7 @@ class OtcListState2 extends State<OtcListScreen2>
   Widget screen() {
     return new Scaffold(
       key: _scaffoldKey,
-      appBar: appBar(),
+      appBar: appBar() as PreferredSizeWidget?,
       body: body(),
       // floatingActionButton: buildBottomNavigationBar(context, _handleDone),
     );
@@ -90,7 +85,7 @@ class OtcListState2 extends State<OtcListScreen2>
         onTap: () {
           // reload();
         },
-        child: Text(customer.name + ' (Add)'),
+        child: Text(customer!.name! + ' (Add)'),
       ),
       elevation: 0.7,
     );
@@ -101,14 +96,14 @@ class OtcListState2 extends State<OtcListScreen2>
       return Text("Processing...");
     }
     if (_otcList == null) {
-      _otcList = List<OtcData>();
+      _otcList = <OtcData>[];
     }
     return new Column(children: <Widget>[
       new Flexible(
         child: new ListView.builder(
           physics: BouncingScrollPhysics(),
           reverse: false,
-          itemCount: _otcList.length,
+          itemCount: _otcList!.length,
           itemBuilder: (context, i) => _buildCustomerItem(i),
         ),
       ),
@@ -127,15 +122,15 @@ class OtcListState2 extends State<OtcListScreen2>
     });
     if (useCamera) {
       // 撮影/選択したFileが返ってくる
-      var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-      // Androidで撮影せずに閉じた場合はnullになる
-      if (imageFile != null) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => new RingupScreen(
-                    customer: customer, callback: widget.callback)));
-      }
+      // var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+      // // Androidで撮影せずに閉じた場合はnullになる
+      // if (imageFile != null) {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => new RingupScreen(
+      //               customer: customer, callback: widget.callback)));
+      // }
     } else {
       Navigator.push(
           context,
@@ -173,7 +168,7 @@ class OtcListState2 extends State<OtcListScreen2>
   }
 
   Widget _buildCustomerItem(int i) {
-    var otc = _otcList[i];
+    var otc = _otcList![i];
     return Padding(
       padding: new EdgeInsets.all(4.0),
       child: new Container(
@@ -210,10 +205,8 @@ class OtcListState2 extends State<OtcListScreen2>
                             style: new TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 28.0),
                           ),
-                          SizedBox(
-                            width:5
-                          ),
-                          Text("+ " + otc.add.toString() ),
+                          SizedBox(width: 5),
+                          Text("+ " + otc.add.toString()),
                         ],
                       ),
                       Row(

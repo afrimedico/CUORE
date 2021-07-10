@@ -1,0 +1,6 @@
+framework module sms {
+  umbrella header "sms-umbrella.h"
+
+  export *
+  module * { export * }
+}

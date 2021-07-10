@@ -1,10 +1,8 @@
 import 'package:cuore/screen/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:cuore/sl/message.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyHomePage(title: 'CUORE'));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -24,12 +22,13 @@ class MyApp extends StatelessWidget {
               TextTheme(title: TextStyle(color: Colors.black, fontSize: 16))),
       debugShowCheckedModeBanner: false,
       home: MyHomePage(title: 'CUORE'),
+      locale: const Locale('es'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -40,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final String title;
 
-  _MyHomePageState({this.title});
+  _MyHomePageState({required this.title});
 
   @override
   void initState() {
@@ -50,43 +49,49 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      localizationsDelegates: [
-        const SLMessageDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale.fromSubtags(
-            languageCode: 'en'), // English: UK/USA/Canada/Singapore/Australia
-        const Locale.fromSubtags(languageCode: 'ja'), // Japanese
-        const Locale.fromSubtags(languageCode: 'ko'), // Korea
-        const Locale.fromSubtags(languageCode: 'zh'), // Chinese
-        const Locale.fromSubtags(
-            languageCode: 'zh',
-            scriptCode: 'Hans'), // simplified Chinese 'zh_Hans'
-        const Locale.fromSubtags(
-            languageCode: 'zh',
-            scriptCode: 'Hant'), // traditional Chinese 'zh_Hant'
-        const Locale.fromSubtags(
-            languageCode: 'zh',
-            scriptCode: 'Hant',
-            countryCode: 'HK'), // traditional Chinese 'zh_Hant_HK'
-        const Locale.fromSubtags(
-            languageCode: 'zh',
-            scriptCode: 'Hant',
-            countryCode: 'TW'), // traditional Chinese 'zh_Hant_TW'
-        const Locale.fromSubtags(languageCode: 'th'), // Thailand
-        const Locale.fromSubtags(languageCode: 'ms'), // Malaysia
-        const Locale.fromSubtags(languageCode: 'id'), // Indonesia
-        const Locale.fromSubtags(languageCode: 'fil'), // Philippines
-        const Locale.fromSubtags(languageCode: 'vi'), // Vietnam
-        const Locale.fromSubtags(languageCode: 'fr'), // France
-        const Locale.fromSubtags(languageCode: 'de'), // Germany
-        const Locale.fromSubtags(languageCode: 'it'), // Italy
-        const Locale.fromSubtags(languageCode: 'ru'), // Russia
-        const Locale.fromSubtags(languageCode: 'es'), // Spain
-        const Locale.fromSubtags(languageCode: 'sw'), // Swahiri
-      ],
+      // localizationsDelegates: [
+      //   const SLMessageDelegate(),
+      //   GlobalMaterialLocalizations.delegate,
+      //   GlobalWidgetsLocalizations.delegate,
+      //   GlobalCupertinoLocalizations.delegate,
+      // ],
+      // localizationsDelegates: AppLocalizations.localizationsDelegates,
+      // supportedLocales: AppLocalizations.supportedLocales,
+      // supportedLocales: [
+      //   const Locale.fromSubtags(
+      //       languageCode: 'en'), // English: UK/USA/Canada/Singapore/Australia
+      //   const Locale.fromSubtags(languageCode: 'ja'), // Japanese
+      //   const Locale.fromSubtags(languageCode: 'ko'), // Korea
+      //   const Locale.fromSubtags(languageCode: 'zh'), // Chinese
+      //   const Locale.fromSubtags(
+      //       languageCode: 'zh',
+      //       scriptCode: 'Hans'), // simplified Chinese 'zh_Hans'
+      //   const Locale.fromSubtags(
+      //       languageCode: 'zh',
+      //       scriptCode: 'Hant'), // traditional Chinese 'zh_Hant'
+      //   const Locale.fromSubtags(
+      //       languageCode: 'zh',
+      //       scriptCode: 'Hant',
+      //       countryCode: 'HK'), // traditional Chinese 'zh_Hant_HK'
+      //   const Locale.fromSubtags(
+      //       languageCode: 'zh',
+      //       scriptCode: 'Hant',
+      //       countryCode: 'TW'), // traditional Chinese 'zh_Hant_TW'
+      //   const Locale.fromSubtags(languageCode: 'th'), // Thailand
+      //   const Locale.fromSubtags(languageCode: 'ms'), // Malaysia
+      //   const Locale.fromSubtags(languageCode: 'id'), // Indonesia
+      //   const Locale.fromSubtags(languageCode: 'fil'), // Philippines
+      //   const Locale.fromSubtags(languageCode: 'vi'), // Vietnam
+      //   const Locale.fromSubtags(languageCode: 'fr'), // France
+      //   const Locale.fromSubtags(languageCode: 'de'), // Germany
+      //   const Locale.fromSubtags(languageCode: 'it'), // Italy
+      //   const Locale.fromSubtags(languageCode: 'ru'), // Russia
+      //   const Locale.fromSubtags(languageCode: 'es'), // Spain
+      //   const Locale.fromSubtags(languageCode: 'sw'), // Swahiri
+      // ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+
+      supportedLocales: AppLocalizations.supportedLocales,
       title: this.title,
       theme: new ThemeData(
           // primaryColor: new Color(0xff075E54),
@@ -99,6 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
           textTheme:
               TextTheme(title: TextStyle(color: Colors.black, fontSize: 16))),
       debugShowCheckedModeBanner: false,
+      locale: const Locale('es'),
       home: HomeScreen(),
       // home: new CureGoHome(),
     );

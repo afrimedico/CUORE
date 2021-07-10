@@ -1,25 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/screen/components/parts.dart';
 import 'package:cuore/screen/otclist.dart';
 import 'package:cuore/screen/ringup.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// Show Otc count.
 class OtcScreen extends StatefulWidget {
   OtcScreen({this.state, this.otc, this.callback});
-  Function(String) callback;
+  Function(String)? callback;
 
-  OtcListState state;
-  OtcData otc;
+  OtcListState? state;
+  OtcData? otc;
 
   @override
   _OtcState createState() => new _OtcState(state: this.state, otc: this.otc);
 }
 
 class _OtcState extends State<OtcScreen> with SingleTickerProviderStateMixin {
-  OtcListState state;
-  OtcData otc;
+  OtcListState? state;
+  OtcData? otc;
 
   _OtcState({this.state, this.otc});
 
@@ -34,7 +34,7 @@ class _OtcState extends State<OtcScreen> with SingleTickerProviderStateMixin {
   }
 
   Widget _otc(otc) {
-    var list = List<Widget>();
+    var list = <Widget>[];
     list.add(Padding(
       padding: EdgeInsets.all(10.0),
       child: _loadImage(''),
@@ -87,8 +87,8 @@ class _OtcState extends State<OtcScreen> with SingleTickerProviderStateMixin {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                new RingupScreen(customer: this.state.customer, callback: widget.callback)));
+            builder: (context) => new RingupScreen(
+                customer: this.state!.customer, callback: widget.callback)));
   }
 
   _onBack() {
@@ -151,7 +151,7 @@ class _OtcState extends State<OtcScreen> with SingleTickerProviderStateMixin {
     return Text(label, style: TextStyle(color: Colors.black, fontSize: 20.0));
   }
 
-  Widget _labelColor(String label, Color color) {
+  Widget _labelColor(String label, Color? color) {
     return Text(label, style: TextStyle(color: color, fontSize: 20.0));
   }
 }

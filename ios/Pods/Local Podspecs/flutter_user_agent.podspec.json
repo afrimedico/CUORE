@@ -1,0 +1,26 @@
+{
+  "name": "flutter_user_agent",
+  "version": "1.2.2",
+  "summary": "Retrieve user-agent properties.",
+  "description": "Retrieve user-agent properties",
+  "homepage": "https://github.com/j0j00/flutter_user_agent",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "j0j00": "jojodev@protonmail.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": [
+
+    ]
+  },
+  "platforms": {
+    "ios": "8.0"
+  }
+}

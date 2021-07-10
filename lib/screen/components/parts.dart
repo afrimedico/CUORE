@@ -1,8 +1,6 @@
+import 'package:cuore/repository/otc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:cuore/repository/otc.dart';
-import 'package:cuore/screen/otclist.dart';
-import 'package:cuore/screen/ringup.dart';
 
 class Parts {
   static final Parts _instance = Parts._internal();
@@ -114,12 +112,13 @@ class Parts {
 
   Widget getChip(String label, Color color) {
     return Chip(
-        label: Text(label, style: TextStyle(color: color, fontSize: 20.0)),
-        backgroundColor: Colors.white,
-        shape: OutlineInputBorder(
-          borderSide: BorderSide(width: 1.0, color: Colors.grey),
-          borderRadius: new BorderRadius.circular(25.0),
-        ));
+      label: Text(label, style: TextStyle(color: color, fontSize: 20.0)),
+      backgroundColor: Colors.white,
+      // shape: OutlineInputBorder(
+      //   borderSide: BorderSide(width: 1.0, color: Colors.grey),
+      //   borderRadius: new BorderRadius.circular(25.0),
+      // ),
+    );
   }
 
   buildBottomButton2(context, onDone, onBack, back) {
