@@ -55,26 +55,29 @@ class CustomerDb {
 
     List<CustomerData> result = <CustomerData>[];
     CustomerData? user;
-    for (var row in sheet!.values.last) {
+    for (var row in sheet?.values.last) {
       var place = row['PLACE'];
       var client = row['CLIENT NAME'];
       var station = row['station'];
+      print('DuongTuan2: ${station}');
       var key = row['Key'];
       var value = row['Value'];
       if (client.length > 0) {
         if (user != null) {
+          user.station = station;
           result.add(user);
         }
         user = CustomerData(place: place, name: client, station: station);
       }
+      // user?.station = station;
       if (key == 'updated') {
-        user!.updated = DateTime.parse(value);
+        user?.updated = DateTime.parse(value);
       } else if (key == 'sale') {
-        user!.sale = value;
+        user?.sale = value;
       } else if (key == 'debt') {
-        user!.debt = value;
+        user?.debt = value;
       } else if (key == 'box') {
-        user!.box = value.toString();
+        user?.box = value.toString();
       } else {
         var count = row['Count'];
         var use = row['Use'];
@@ -92,9 +95,10 @@ class CustomerDb {
             preadd: add,
             useall: useall,
             addall: addall);
-        user!.otcList!.add(otc);
+        user?.otcList?.add(otc);
       }
     }
+    result.forEach((element) {print('DuongTuan1: ${element.station}');});
     result.add(user!);
     return result;
   }

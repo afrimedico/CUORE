@@ -4,6 +4,7 @@ import 'package:cuore/data/master_data.dart';
 import 'package:cuore/repository/home_repository.dart';
 import 'package:cuore/screen/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddNewCustomer extends StatelessWidget {
   final List<CustomerData> customerList;
@@ -26,7 +27,7 @@ class AddNewCustomer extends StatelessWidget {
     homeRepository.writePlayerData(MasterData(majorDimension: 'ROWS', range: 'sherma3@gmail.com!A1:I1000', values: []));
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new customer'),
+        title: Text(AppLocalizations.of(context).ok),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -35,7 +36,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Name',
+                  AppLocalizations.of(context).user_name,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -47,7 +48,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Village',
+                  AppLocalizations.of(context).village,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -69,7 +70,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Station',
+                  AppLocalizations.of(context).place,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -91,7 +92,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Box',
+                  AppLocalizations.of(context).box,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -111,7 +112,7 @@ class AddNewCustomer extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.black26)),
-                child: Text('ADD'),
+                child: Text(AppLocalizations.of(context).add),
               ),
             )
           ],
