@@ -552,6 +552,9 @@ class _RingupState extends State<RingupScreen>
     int result = await (HelperFunction().sendSms(text));
 
     if (result != 200 || !isNetworkConnected) {
+
+
+      print('DuongTuan: $result, $isNetworkConnected');
       prefs.setStringList('failedMessages', failedMessages);
 
       showDialog(
@@ -563,10 +566,10 @@ class _RingupState extends State<RingupScreen>
             CupertinoDialogAction(
               isDefaultAction: true,
               child: Text("OK"),
-              onPressed: () async {
-                Navigator.of(_originalContext)
-                    .popUntil((route) => route.isFirst);
-                Navigator.of(context).pop(false);
+              onPressed: () {
+                // Navigator.of(_originalContext)
+                //     .popUntil((route) => route.isFirst);
+                Navigator.of(context).pop();
               },
             )
           ],

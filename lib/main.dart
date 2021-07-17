@@ -1,13 +1,16 @@
 import 'package:cuore/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyHomePage(title: 'CUORE'));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
+    SharedPreferences.setMockInitialValues({});
     return MaterialApp(
       title: 'CUORE',
       theme: new ThemeData(

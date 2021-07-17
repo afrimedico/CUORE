@@ -1,29 +1,25 @@
 {
-    "@home": {
         "user_name": "Username",
         "save": "Save",
         "search": "Search",
         "village": "Village",
         "add": "Add",
-        "choose_an_option": "Choose an option"
-    },
-    "@count": {
+        "choose_an_option": "Choose an option",
         "count": "Count",
         "adult": "ADULT",
-        "child": "CHILD"
-    },
-    "@bill": {
+        "child": "CHILD",
         "details": "Details",
         "version": "Version",
         "visit_date": "Visit date",
         "collection": "Collection",
         "accounts_payable": "Accounts payable",
         "back": "Back",
-        "ring_up": "Ring up"
-    },
-    "@sendMessage": {
+        "ring_up": "Ring up",
         "send": "Send",
         "cancel": "Cancel",
-        "sheet": "sheet"
-    }
+        "sheet": "sheet",
+        "resend":"resend",
+        "ok":"ok",
+        "all":"All",
+        "place":"Station"
 }
