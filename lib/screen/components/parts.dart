@@ -1,6 +1,7 @@
 import 'package:cuore/repository/otc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Parts {
   static final Parts _instance = Parts._internal();
@@ -186,7 +187,7 @@ class Parts {
     );
   }
 
-  buildBottomButton3(context, onDone, stage) {
+  buildBottomButton3(context, onDone, stage,bgColor) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
@@ -199,7 +200,7 @@ class Parts {
             flex: 2,
             child: RaisedButton(
               onPressed: onDone,
-              color: Colors.pink,
+              color: bgColor ??  Colors.pink,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -212,7 +213,7 @@ class Parts {
                       width: 4.0,
                     ),
                     Text(
-                      stage == 0 ? "Add" : "Collect",
+                      stage == 0 ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.collect,
                       style: TextStyle(color: Colors.white),
                     ),
                   ],

@@ -1,7 +1,9 @@
 
-
-
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
+
+// ignore_for_file: unnecessary_brace_in_string_interps
 
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
@@ -21,6 +23,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add => 'Add';
+
+  @override
+  String get collect => 'Collect';
 
   @override
   String get choose_an_option => 'Choose an option';
@@ -45,6 +50,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collection => 'Collection';
+
+  @override
+  String get input_collection => 'Input Collection';
 
   @override
   String get accounts_payable => 'Accounts payable';
@@ -74,8 +82,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all => 'All';
 
   @override
-  String get place => 'Station';
+  String get box => 'Box';
 
   @override
-  String get box => 'Box';
+  String get station => 'Station';
+
+  @override
+  String get ringup_use => 'use';
+
+  @override
+  String get customer_count => 'Count';
+
+  @override
+  String get resend_by_sms => 'Resend by SMS';
+
+  @override
+  String get resend_again => 'Please send again when your network works.';
+
+  @override
+  String get resend_error => 'Some messages cant be sent properly.';
+
+  @override
+  String get message_sent => 'Message sent';
+
+  @override
+  String get failed_messages => 'Failed Messages';
+
+  @override
+  String get processing => 'Processing...';
+
+  @override
+  String get all_villages => 'All villages';
+
+  @override
+  String get all_stations => 'All stations';
+
+  @override
+  String get reloading => 'Reloading...';
 }

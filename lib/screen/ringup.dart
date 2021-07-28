@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
@@ -73,7 +74,7 @@ class _RingupState extends State<RingupScreen>
   Widget body() {
     return new Column(children: <Widget>[
       Text(
-        "Details",
+        AppLocalizations.of(context)!.details,
         style: new TextStyle(color: Colors.black, fontSize: 16.0),
       ),
       Expanded(
@@ -117,7 +118,7 @@ class _RingupState extends State<RingupScreen>
                     style: new TextStyle(color: Colors.pink, fontSize: 16.0),
                   ),
                   new Text(
-                    ' use: ' + (otc.base - otc.count).toString(),
+                    AppLocalizations.of(context)!.ringup_use + (otc.base - otc.count).toString(),
                     style: new TextStyle(color: Colors.black, fontSize: 16.0),
                   ),
                 ],
@@ -155,7 +156,7 @@ class _RingupState extends State<RingupScreen>
         children: [
           SizedBox(width: 5, height: 10),
           Text(
-            'Visit date',
+            AppLocalizations.of(context)!.visit_date,
             style: new TextStyle(fontSize: 16.0),
           ),
           SizedBox(
@@ -268,7 +269,7 @@ class _RingupState extends State<RingupScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                label('Accounts payable'),
+                label(AppLocalizations.of(context)!.accounts_payable),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
@@ -302,7 +303,7 @@ class _RingupState extends State<RingupScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                label('Collection'),
+                label(AppLocalizations.of(context)!.collection),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
@@ -378,7 +379,7 @@ class _RingupState extends State<RingupScreen>
         actions: [
           CupertinoDialogAction(
             isDefaultAction: true,
-            child: Text("Send"),
+            child: Text(AppLocalizations.of(context)!.send),
             onPressed: () async {
               if (!_isButtonTapped) {
                 _isButtonTapped = true;
@@ -389,10 +390,11 @@ class _RingupState extends State<RingupScreen>
             },
           ),
           CupertinoDialogAction(
-            child: Text("Cancel"),
+            child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () {
-              Navigator.of(_originalContext).popUntil((route) => route.isFirst);
               Navigator.of(context).pop(false);
+              Navigator.of(_originalContext).popUntil((route) => route.isFirst);
+
             },
           )
         ],
@@ -436,7 +438,7 @@ class _RingupState extends State<RingupScreen>
                       width: 4.0,
                     ),
                     Text(
-                      "Back",
+                      AppLocalizations.of(context)!.back,
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -466,7 +468,7 @@ class _RingupState extends State<RingupScreen>
                       width: 4.0,
                     ),
                     Text(
-                      (collection != -1) ? "Ring up" : "(Input collection)",
+                      (collection != -1) ? AppLocalizations.of(context)!.ring_up : AppLocalizations.of(context)!.input_collection,
                       style: TextStyle(
                         color: (collection != -1) ? Colors.white : Colors.black,
                       ),
@@ -552,20 +554,17 @@ class _RingupState extends State<RingupScreen>
     int result = await (HelperFunction().sendSms(text));
 
     if (result != 200 || !isNetworkConnected) {
-
-
-      print('DuongTuan: $result, $isNetworkConnected');
       prefs.setStringList('failedMessages', failedMessages);
 
       showDialog(
         context: context,
         builder: (BuildContext context) => new CupertinoAlertDialog(
-          title: Text('Some messages cant be sent properly.'),
-          content: Text('Please send again when your network works.'),
+          title: Text(AppLocalizations.of(context)!.resend_error),
+          content: Text(AppLocalizations.of(context)!.resend_again),
           actions: [
             CupertinoDialogAction(
               isDefaultAction: true,
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.ok),
               onPressed: () {
                 // Navigator.of(_originalContext)
                 //     .popUntil((route) => route.isFirst);
@@ -583,11 +582,11 @@ class _RingupState extends State<RingupScreen>
       showDialog(
         context: context,
         builder: (BuildContext context) => new CupertinoAlertDialog(
-          title: Text('Message sent'),
+          title: Text(AppLocalizations.of(context)!.message_sent),
           actions: [
             CupertinoDialogAction(
               isDefaultAction: true,
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.ok),
               onPressed: () async {
                 Navigator.of(context).pop(false);
               },
