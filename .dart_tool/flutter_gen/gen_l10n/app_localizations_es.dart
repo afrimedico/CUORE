@@ -25,7 +25,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get add => 'Ongeza';
 
   @override
-  String get collect => 'Collect 1';
+  String get collect => 'Collect';
 
   @override
   String get choose_an_option => 'Chagua kwenye orodha';
@@ -52,7 +52,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get collection => 'Ukusanyaji';
 
   @override
-  String get input_collection => 'Input Collection 1';
+  String get input_collection => 'Input Collection';
 
   @override
   String get accounts_payable => 'Akaunti zinazolipwa';
@@ -73,50 +73,50 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sheet => 'karatasi';
 
   @override
-  String get resend => 'resend 1';
+  String get resend => 'resend';
 
   @override
   String get ok => 'ok';
 
   @override
-  String get all => 'All 1';
+  String get all => 'All';
 
   @override
-  String get box => 'Box 1';
+  String get box => 'Box';
 
   @override
-  String get station => 'Station 1';
+  String get station => 'Station';
 
   @override
-  String get ringup_use => 'use 1';
+  String get ringup_use => 'use';
 
   @override
-  String get customer_count => 'Count 1';
+  String get customer_count => 'Count';
 
   @override
-  String get resend_by_sms => 'Resend by SMS 1';
+  String get resend_by_sms => 'Resend by SMS';
 
   @override
-  String get resend_again => 'Please send again when your network works. 1';
+  String get resend_again => 'Please send again when your network works. ';
 
   @override
-  String get resend_error => 'Some messages cant be sent properly. 1';
+  String get resend_error => 'Some messages cant be sent properly. ';
 
   @override
-  String get message_sent => 'Message sent 1';
+  String get message_sent => 'Message sent';
 
   @override
-  String get failed_messages => 'Failed Messages 1';
+  String get failed_messages => 'Failed Messages';
 
   @override
-  String get processing => 'Processing... 1';
+  String get processing => 'Processing...';
 
   @override
-  String get all_villages => 'All villages 1';
+  String get all_villages => 'All villages';
 
   @override
-  String get all_stations => 'All stations 1';
+  String get all_stations => 'All stations';
 
   @override
-  String get reloading => 'Reloading...1';
+  String get reloading => 'Reloading...';
 }
