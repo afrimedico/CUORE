@@ -42,7 +42,7 @@ class CustomerData {
     // print(debt);
     // print(updated);
     // print(box);
-    print('DuongTuan: $place $station');
+    // print('DuongTuan: $place $station');
   }
 }
 
@@ -61,6 +61,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
     reload();
   }
+
+  bool _isButtonTapped = false;
 
   // Google sheetからデータをロード
   Future reload() async {
@@ -242,11 +244,19 @@ class _WhatsAppHomeState extends State<HomeScreen>
           OutlineButton(
               child: Text(AppLocalizations.of(context)!.resend),
               onPressed: () async {
+                if(_isButtonTapped == true){
+                  return;
+                }
+
+                _isButtonTapped = true;
+
                 int result =
                     await (HelperFunction().sendSms(message));
 
                 var isNetworkConnected =
                     await HelperFunction().checkDeviceNetwork();
+
+                _isButtonTapped = false;
 
                 if (result != 200 || !isNetworkConnected) {
                   showDialog(
@@ -274,7 +284,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                           },
                         )
                       ],
-                    ),
+                    ), barrierDismissible: false
                   );
                 } else {
                   showDialog(
@@ -290,7 +300,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
                           },
                         )
                       ],
-                    ),
+                    ), barrierDismissible: false
                   );
 
                   dynamic updatedFailedMessages = _failedMessages!.where((e) {
@@ -540,7 +550,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
         .map((e) => e.station?.toUpperCase())
         .toList()).toList();
 
-    _customerVillages.forEach((element) {print(element);});
+    // _customerVillages.forEach((element) {print(element);});
 
     return (Column(
       children: [
@@ -717,7 +727,6 @@ class _WhatsAppHomeState extends State<HomeScreen>
       _selectedStation = value ?? 'ALL';
       _searchedList =
           filterList(_selectedVillage ?? 'ALL', _selectedStation ?? 'ALL');
-      print('DuongTuan: $_searchedList');
     });
     _searchedList?.forEach((element) {
       element.log();

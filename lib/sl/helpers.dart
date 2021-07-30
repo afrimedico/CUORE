@@ -18,7 +18,7 @@ class HelperFunction {
         return response.statusCode;
       }
     }catch(e){
-      print('DuongTuan: $e');
+      print('Error from azure: $e');
       return 0;
     }
   }
