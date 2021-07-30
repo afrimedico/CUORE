@@ -9,8 +9,12 @@ class HelperFunction {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     };
+
+    var param_code = "?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==";
+
     var url =
-        'https://cuore-sms.azurewebsites.net/api/HttpTrigger1?code=QXl3PM41immtOYF6myeZPJgl6m7r6/0zacidKlkbcPhZDM3aGxS4EA==';
+        'https://cuore-sms.azurewebsites.net/api/HttpTrigger1'+param_code;
+
     try{
       final response = await http.post(Uri.parse(url),
           headers: headers, body: json.encode({"SmsInfo": text}));
