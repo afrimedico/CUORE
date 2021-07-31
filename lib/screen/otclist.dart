@@ -5,6 +5,7 @@ import 'package:cuore/screen/otclist2.dart';
 import 'package:cuore/screen/ringup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Show Otc list which customer has.
 class OtcListScreen extends StatefulWidget {
@@ -85,7 +86,7 @@ class OtcListState extends State<OtcListScreen>
         onTap: () {
           // reload();
         },
-        child: Text(customer!.name! + ' (Count)'),
+        child: Text(customer!.name! + ' ('+AppLocalizations.of(context)!.customer_count+')'),
       ),
       elevation: 0.7,
     );
@@ -109,7 +110,7 @@ class OtcListState extends State<OtcListScreen>
       ),
       new Divider(height: 1.0),
       // Parts().buildBottomButton(context, barcodeScanning),
-      Parts().buildBottomButton3(context, _handleCamera, 0)
+      Parts().buildBottomButton3(context, _handleCamera, 0,Colors.pinkAccent)
     ]);
   }
 

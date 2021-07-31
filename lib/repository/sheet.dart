@@ -59,7 +59,6 @@ class CustomerDb {
       var place = row['PLACE'];
       var client = row['CLIENT NAME'];
       var station = row['station'];
-      print('DuongTuan2: ${station}');
       var key = row['Key'];
       var value = row['Value'];
       if (client.length > 0) {
@@ -98,7 +97,6 @@ class CustomerDb {
         user?.otcList?.add(otc);
       }
     }
-    result.forEach((element) {print('DuongTuan1: ${element.station}');});
     result.add(user!);
     return result;
   }

@@ -27,7 +27,7 @@ class AddNewCustomer extends StatelessWidget {
     homeRepository.writePlayerData(MasterData(majorDimension: 'ROWS', range: 'sherma3@gmail.com!A1:I1000', values: []));
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).ok),
+        title: Text(AppLocalizations.of(context)!.ok),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -36,7 +36,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  AppLocalizations.of(context).user_name,
+                  AppLocalizations.of(context)!.user_name,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -48,7 +48,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  AppLocalizations.of(context).village,
+                  AppLocalizations.of(context)!.village,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -70,7 +70,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  AppLocalizations.of(context).place,
+                  AppLocalizations.of(context)!.station,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -92,7 +92,7 @@ class AddNewCustomer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  AppLocalizations.of(context).box,
+                  AppLocalizations.of(context)!.box,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
                 Expanded(
@@ -112,7 +112,7 @@ class AddNewCustomer extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.black26)),
-                child: Text(AppLocalizations.of(context).add),
+                child: Text(AppLocalizations.of(context)!.add),
               ),
             )
           ],

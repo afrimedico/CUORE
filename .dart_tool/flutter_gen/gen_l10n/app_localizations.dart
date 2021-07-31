@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+// ignore: unused_import
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -63,10 +64,11 @@ import 'app_localizations_es.dart';
 abstract class AppLocalizations {
   AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
+  // ignore: unused_field
   final String localeName;
 
-  static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
   static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
@@ -124,6 +126,12 @@ abstract class AppLocalizations {
   /// **'Add'**
   String get add;
 
+  /// No description provided for @collect.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect'**
+  String get collect;
+
   /// No description provided for @choose_an_option.
   ///
   /// In en, this message translates to:
@@ -171,6 +179,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Collection'**
   String get collection;
+
+  /// No description provided for @input_collection.
+  ///
+  /// In en, this message translates to:
+  /// **'Input Collection'**
+  String get input_collection;
 
   /// No description provided for @accounts_payable.
   ///
@@ -226,17 +240,83 @@ abstract class AppLocalizations {
   /// **'All'**
   String get all;
 
-  /// No description provided for @place.
-  ///
-  /// In en, this message translates to:
-  /// **'Station'**
-  String get place;
-
   /// No description provided for @box.
   ///
   /// In en, this message translates to:
   /// **'Box'**
   String get box;
+
+  /// No description provided for @station.
+  ///
+  /// In en, this message translates to:
+  /// **'Station'**
+  String get station;
+
+  /// No description provided for @ringup_use.
+  ///
+  /// In en, this message translates to:
+  /// **'use'**
+  String get ringup_use;
+
+  /// No description provided for @customer_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Count'**
+  String get customer_count;
+
+  /// No description provided for @resend_by_sms.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend by SMS'**
+  String get resend_by_sms;
+
+  /// No description provided for @resend_again.
+  ///
+  /// In en, this message translates to:
+  /// **'Please send again when your network works.'**
+  String get resend_again;
+
+  /// No description provided for @resend_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Some messages cant be sent properly.'**
+  String get resend_error;
+
+  /// No description provided for @message_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Message sent'**
+  String get message_sent;
+
+  /// No description provided for @failed_messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed Messages'**
+  String get failed_messages;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get processing;
+
+  /// No description provided for @all_villages.
+  ///
+  /// In en, this message translates to:
+  /// **'All villages'**
+  String get all_villages;
+
+  /// No description provided for @all_stations.
+  ///
+  /// In en, this message translates to:
+  /// **'All stations'**
+  String get all_stations;
+
+  /// No description provided for @reloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reloading...'**
+  String get reloading;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

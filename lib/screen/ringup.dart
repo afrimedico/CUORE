@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
@@ -18,8 +19,6 @@ class RingupScreen extends StatefulWidget {
   int? status;
 
   CustomerData? customer;
-
-  bool _isButtonTapped = false;
 
   @override
   _RingupState createState() =>
@@ -33,6 +32,8 @@ class _RingupState extends State<RingupScreen>
   int? status;
 
   List<OtcData>? _otcList;
+
+  bool _isButtonTapped = false;
 
   DateTime selectedVisitedDate = DateTime.now();
 
@@ -73,7 +74,7 @@ class _RingupState extends State<RingupScreen>
   Widget body() {
     return new Column(children: <Widget>[
       Text(
-        "Details",
+        AppLocalizations.of(context)!.details,
         style: new TextStyle(color: Colors.black, fontSize: 16.0),
       ),
       Expanded(
@@ -117,7 +118,8 @@ class _RingupState extends State<RingupScreen>
                     style: new TextStyle(color: Colors.pink, fontSize: 16.0),
                   ),
                   new Text(
-                    ' use: ' + (otc.base - otc.count).toString(),
+                    AppLocalizations.of(context)!.ringup_use +
+                        (otc.base - otc.count).toString(),
                     style: new TextStyle(color: Colors.black, fontSize: 16.0),
                   ),
                 ],
@@ -155,7 +157,7 @@ class _RingupState extends State<RingupScreen>
         children: [
           SizedBox(width: 5, height: 10),
           Text(
-            'Visit date',
+            AppLocalizations.of(context)!.visit_date,
             style: new TextStyle(fontSize: 16.0),
           ),
           SizedBox(
@@ -268,7 +270,7 @@ class _RingupState extends State<RingupScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                label('Accounts payable'),
+                label(AppLocalizations.of(context)!.accounts_payable),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
@@ -302,7 +304,7 @@ class _RingupState extends State<RingupScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
-                label('Collection'),
+                label(AppLocalizations.of(context)!.collection),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                 ),
@@ -370,34 +372,47 @@ class _RingupState extends State<RingupScreen>
 
   _showConfirmCustomerDialog() {
     var _originalContext = context;
-    bool _isButtonTapped = false;
+
     showDialog(
-      context: context,
-      builder: (BuildContext context) => new CupertinoAlertDialog(
-        title: new Text(customer!.name!),
-        actions: [
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text("Send"),
-            onPressed: () async {
-              if (!_isButtonTapped) {
-                _isButtonTapped = true;
-                await _handleDone();
-                _isButtonTapped = false;
-                Navigator.of(context).pop(false);
-              }
-            },
-          ),
-          CupertinoDialogAction(
-            child: Text("Cancel"),
-            onPressed: () {
-              Navigator.of(_originalContext).popUntil((route) => route.isFirst);
-              Navigator.of(context).pop(false);
-            },
-          )
-        ],
-      ),
-    );
+        context: context,
+        builder: (BuildContext dialogContext) => new CupertinoAlertDialog(
+              title: new Text(customer!.name!),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text(AppLocalizations.of(context)!.send),
+                  onPressed: () async {
+                    if(_isButtonTapped == true){
+                      return;
+                    }
+
+                    _isButtonTapped = true;
+
+                    bool isHandled = await _handleDone(dialogContext);
+
+                    if (isHandled) {
+
+                      Navigator.of(dialogContext).maybePop();
+
+                      _isButtonTapped = false;
+                    }
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                  onPressed: () {
+                    _isButtonTapped = false;
+                    Navigator.of(context).maybePop();
+                    Navigator.pushAndRemoveUntil(
+                        _originalContext,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => HomeScreen()),
+                        (Route<dynamic> route) => false);
+                  },
+                )
+              ],
+            ),
+        barrierDismissible: false);
   }
 
   void _sendSMS(String message, List<String> recipents) async {
@@ -436,7 +451,7 @@ class _RingupState extends State<RingupScreen>
                       width: 4.0,
                     ),
                     Text(
-                      "Back",
+                      AppLocalizations.of(context)!.back,
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -449,8 +464,8 @@ class _RingupState extends State<RingupScreen>
             flex: 2,
             child: RaisedButton(
               onPressed: () {
-                if (collection != -1) {
-                  _showConfirmCustomerDialog();
+                if (collection != -1 && _isButtonTapped == false) {
+                  return _showConfirmCustomerDialog();
                 }
               },
               color: (collection != -1) ? Colors.blue : Colors.white,
@@ -466,7 +481,9 @@ class _RingupState extends State<RingupScreen>
                       width: 4.0,
                     ),
                     Text(
-                      (collection != -1) ? "Ring up" : "(Input collection)",
+                      (collection != -1)
+                          ? AppLocalizations.of(context)!.ring_up
+                          : AppLocalizations.of(context)!.input_collection,
                       style: TextStyle(
                         color: (collection != -1) ? Colors.white : Colors.black,
                       ),
@@ -481,7 +498,34 @@ class _RingupState extends State<RingupScreen>
     );
   }
 
-  Future _handleDone() async {
+  Future _handleDone(context) async {
+    var user = await App.getProfile();
+
+    if (user['name'] == null) {
+      await showDialog(
+          context: context,
+          builder: (BuildContext dialogContent) => new CupertinoAlertDialog(
+            title: Text("You must fill name before do this action"),
+            actions: [
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                child: Text(AppLocalizations.of(context)!.ok),
+                onPressed: () {
+                  Navigator.of(dialogContent).maybePop();
+
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HomeScreen()),
+                          (Route<dynamic> route) => false);
+                },
+              )
+            ],
+          ),
+          barrierDismissible: false);
+      return true;
+    }
+
     // baseがあるのにcountが0ならcaution
     var caution = false;
     var count = false;
@@ -506,7 +550,7 @@ class _RingupState extends State<RingupScreen>
       customer!.otcList = _otcList;
     }
 
-    print(customer!.otcList.toString());
+    // print(customer!.otcList.toString());
 
     // 請求額
     int claim = use + customer!.debt;
@@ -531,12 +575,12 @@ class _RingupState extends State<RingupScreen>
 
     // SMS送信
     // TODO: この情報はDBに保存しておいて、SMS送信失敗時にリトライできるようにする
-    _sendMessage(text);
+    return _sendMessage(text);
   }
 
   List<String> _sent = [];
 
-  void _sendMessage(String text) async {
+  Future<bool> _sendMessage(String text) async {
     final prefs = await SharedPreferences.getInstance();
 
     List<String> failedMessages = prefs.getStringList('failedMessages') != null
@@ -552,44 +596,55 @@ class _RingupState extends State<RingupScreen>
     int result = await (HelperFunction().sendSms(text));
 
     if (result != 200 || !isNetworkConnected) {
-
-
-      print('DuongTuan: $result, $isNetworkConnected');
       prefs.setStringList('failedMessages', failedMessages);
 
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => new CupertinoAlertDialog(
-          title: Text('Some messages cant be sent properly.'),
-          content: Text('Please send again when your network works.'),
-          actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text("OK"),
-              onPressed: () {
-                // Navigator.of(_originalContext)
-                //     .popUntil((route) => route.isFirst);
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      );
+      widget.callback!('reloadFailedMessage');
+
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => new CupertinoAlertDialog(
+                title: Text(AppLocalizations.of(context)!.resend_error),
+                content: Text(AppLocalizations.of(context)!.resend_again),
+                actions: [
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child: Text(AppLocalizations.of(context)!.ok),
+                    onPressed: () {
+                      Navigator.of(context).maybePop();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => HomeScreen()),
+                              (Route<dynamic> route) => false);
+
+                    },
+                  )
+                ],
+              ),
+          barrierDismissible: false);
     } else {
       failedMessages.remove(text);
+
       prefs.setStringList('failedMessages', failedMessages);
+
       _sent.add(text);
-      Navigator.of(_originalContext).popUntil((route) => route.isFirst);
-      showDialog(
+
+      widget.callback!('reloadFailedMessage');
+
+      await showDialog(
         context: context,
         builder: (BuildContext context) => new CupertinoAlertDialog(
-          title: Text('Message sent'),
+          title: Text(AppLocalizations.of(context)!.message_sent),
           actions: [
             CupertinoDialogAction(
               isDefaultAction: true,
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.ok),
               onPressed: () async {
-                Navigator.of(context).pop(false);
+                Navigator.of(context).maybePop();
+                Navigator.pushAndRemoveUntil(
+                    _originalContext,
+                    MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+                        (Route<dynamic> route) => false);
               },
             )
           ],
@@ -597,8 +652,7 @@ class _RingupState extends State<RingupScreen>
       );
     }
 
-    widget.callback!('reloadFailedMessage');
-    // print(_sent);
+    return true;
   }
 
   void sendSms(String address, String text) {
@@ -629,7 +683,7 @@ class _RingupState extends State<RingupScreen>
 
     String? name = '';
 
-    if (user != null) {
+    if (user != null && user['name'] != null) {
       name = user['name'];
     }
 

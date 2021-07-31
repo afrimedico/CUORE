@@ -42,7 +42,7 @@ class CustomerData {
     // print(debt);
     // print(updated);
     // print(box);
-    print('DuongTuan: $place $station');
+    // print('DuongTuan: $place $station');
   }
 }
 
@@ -61,6 +61,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
     reload();
   }
+
+  bool _isButtonTapped = false;
 
   // Google sheetからデータをロード
   Future reload() async {
@@ -132,8 +134,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
             builder: (context) => AddNewCustomer(_customerList),
           ));
         },
-        label: const Text(
-          'Add',
+        label:  Text(
+          AppLocalizations.of(context)!.add,
           style: TextStyle(color: Colors.white),
         ),
         icon: const Icon(
@@ -159,8 +161,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
           TextField(
             controller: _textEditingController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).user_name,
-              hintText: AppLocalizations.of(context).user_name,
+              labelText: AppLocalizations.of(context)!.user_name,
+              hintText: AppLocalizations.of(context)!.user_name,
               icon: Icon(Icons.account_circle),
             ),
             autocorrect: false,
@@ -168,7 +170,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
             keyboardType: TextInputType.text,
           ),
           RaisedButton(
-            child: Text(AppLocalizations.of(context).save),
+            child: Text(AppLocalizations.of(context)!.save),
             color: Colors.orange,
             textColor: Colors.white,
             onPressed: () async {
@@ -213,7 +215,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
           child: Column(
             children: [
               Text(
-                'Failed Messages',
+                AppLocalizations.of(context)!.failed_messages,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Expanded(
@@ -240,31 +242,39 @@ class _WhatsAppHomeState extends State<HomeScreen>
         child: Column(children: [
           Text(message),
           OutlineButton(
-              child: Text(AppLocalizations.of(context).resend),
+              child: Text(AppLocalizations.of(context)!.resend),
               onPressed: () async {
+                if(_isButtonTapped == true){
+                  return;
+                }
+
+                _isButtonTapped = true;
+
                 int result =
                     await (HelperFunction().sendSms(message));
 
                 var isNetworkConnected =
                     await HelperFunction().checkDeviceNetwork();
 
+                _isButtonTapped = false;
+
                 if (result != 200 || !isNetworkConnected) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => new CupertinoAlertDialog(
-                      title: Text('Some messages cant be sent properly.'),
+                      title: Text(AppLocalizations.of(context)!.resend_error),
                       content:
-                          Text('Please send again when your network works.'),
+                          Text(AppLocalizations.of(context)!.resend_again),
                       actions: [
                         CupertinoDialogAction(
                           isDefaultAction: true,
-                          child: Text(AppLocalizations.of(context).ok),
+                          child: Text(AppLocalizations.of(context)!.ok),
                           onPressed: () async {
                             Navigator.of(context).pop(false);
                           },
                         ),
                         CupertinoDialogAction(
-                          child: Text("Resend by SMS"),
+                          child: Text(AppLocalizations.of(context)!.resend_by_sms),
                           onPressed: () async {
                             var address = "+1 619 357 4294";
                             // sendSms(address, text);
@@ -274,23 +284,23 @@ class _WhatsAppHomeState extends State<HomeScreen>
                           },
                         )
                       ],
-                    ),
+                    ), barrierDismissible: false
                   );
                 } else {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => new CupertinoAlertDialog(
-                      title: Text('Message sent'),
+                      title: Text(AppLocalizations.of(context)!.message_sent),
                       actions: [
                         CupertinoDialogAction(
                           isDefaultAction: true,
-                          child: Text(AppLocalizations.of(context).ok),
+                          child: Text(AppLocalizations.of(context)!.ok),
                           onPressed: () async {
                             Navigator.of(context).pop(false);
                           },
                         )
                       ],
-                    ),
+                    ), barrierDismissible: false
                   );
 
                   dynamic updatedFailedMessages = _failedMessages!.where((e) {
@@ -483,7 +493,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
         IconButton(
           icon: Icon(Icons.cached),
           onPressed: () {
-            final snackBar = SnackBar(content: Text('Reloading...'));
+            final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.reloading));
             _scaffoldKey.currentState!.showSnackBar(snackBar);
             reloadAndSave();
           },
@@ -495,7 +505,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   Widget body() {
     if (loading) {
-      return Text("Processing...");
+      return Text(AppLocalizations.of(context)!.processing);
     }
     if (_searchedList == null) {
       return Text('No user data: ' + userName!);
@@ -524,7 +534,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
   Widget _inputLine() {
     if (_customerList.length <= 0) {
-      return Text("Processing...");
+      return Text(AppLocalizations.of(context)!.processing);
     }
 
     List<String> _customerVillages = [];
@@ -540,14 +550,14 @@ class _WhatsAppHomeState extends State<HomeScreen>
         .map((e) => e.station?.toUpperCase())
         .toList()).toList();
 
-    _customerVillages.forEach((element) {print(element);});
+    // _customerVillages.forEach((element) {print(element);});
 
     return (Column(
       children: [
         Padding(
             padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: TextField(
-              decoration: InputDecoration(hintText: 'Search'),
+              decoration: InputDecoration(hintText: AppLocalizations.of(context)!.search),
               controller: _mainInputController,
               onChanged: _handleMainInputChanged,
             )),
@@ -556,7 +566,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
             child: Row(
               children: [
                 Text(
-                  AppLocalizations.of(context).village,
+                  AppLocalizations.of(context)!.village,
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(
@@ -569,11 +579,11 @@ class _WhatsAppHomeState extends State<HomeScreen>
                     elevation: 10,
                     hint: Text(_selectedVillage != null
                         ? _selectedVillage!
-                        : AppLocalizations.of(context).choose_an_option),
+                        : AppLocalizations.of(context)!.choose_an_option),
                     items: [
                       DropdownMenuItem<String>(
-                        value: AppLocalizations.of(context).all,
-                        child: new Text('All villages'),
+                        value: 'ALL',
+                        child: new Text(AppLocalizations.of(context)!.all_villages),
                       ),
                       ...(_customerVillages.map((village) {
                         return new DropdownMenuItem<String>(
@@ -592,7 +602,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
             child: Row(
               children: [
                 Text(
-                  AppLocalizations.of(context).place,
+                  AppLocalizations.of(context)!.station,
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(
@@ -605,11 +615,11 @@ class _WhatsAppHomeState extends State<HomeScreen>
                     elevation: 10,
                     hint: Text(_selectedStation != null
                         ? _selectedStation!
-                        : AppLocalizations.of(context).choose_an_option),
+                        : AppLocalizations.of(context)!.choose_an_option),
                     items: [
                       DropdownMenuItem<String>(
-                        value: AppLocalizations.of(context).all,
-                        child: new Text('All station'),
+                        value: 'ALL',
+                        child: new Text(AppLocalizations.of(context)!.all_stations),
                       ),
                       ...(_customerStation.map((village) {
                         return new DropdownMenuItem<String>(
@@ -717,7 +727,6 @@ class _WhatsAppHomeState extends State<HomeScreen>
       _selectedStation = value ?? 'ALL';
       _searchedList =
           filterList(_selectedVillage ?? 'ALL', _selectedStation ?? 'ALL');
-      print('DuongTuan: $_searchedList');
     });
     _searchedList?.forEach((element) {
       element.log();
