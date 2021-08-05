@@ -1,12 +1,32 @@
 {
   "majorDimension": "ROWS",
   "range": "'sherma3@gmail.com'!A1:I1000",
-
   "values": [
     {
-      "station": "campuchia",
-      "PLACE": "",
+      "PLACE": "BWAMA",
       "CLIENT NAME": "ROBEN SHEHEMBA",
+      "Key": "updated",
+      "Value": "2020-11-01T00:00:00.000Z",
+      "Count": 0,
+      "Use": 0,
+      "Add": 0,
+      "Useall": 0,
+      "addall": 0
+    },
+    {
+      "PLACE": "",
+      "CLIENT NAME": "",
+      "Key": "sale",
+      "Value": 0,
+      "Count": 0,
+      "Use": 0,
+      "Add": 0,
+      "Useall": 0,
+      "addall": 0
+    },
+    {
+      "PLACE": "",
+      "CLIENT NAME": "",
       "Key": "debt",
       "Value": 0,
       "Count": 0,
@@ -16,7 +36,6 @@
       "addall": 0
     },
     {
-      "station": "VietNam",
       "PLACE": "",
       "CLIENT NAME": "",
       "Key": "box",
@@ -28,7 +47,6 @@
       "addall": 0
     },
     {
-      "station": "campuchia",
       "PLACE": "",
       "CLIENT NAME": "",
       "Key": "A000100010001",
@@ -40,7 +58,6 @@
       "addall": 0
     },
     {
-      "station": "campuchia",
       "PLACE": "",
       "CLIENT NAME": "",
       "Key": "A000100010002",
@@ -52,7 +69,6 @@
       "addall": 0
     },
     {
-      "station": "japan",
       "PLACE": "",
       "CLIENT NAME": "",
       "Key": "A000100010003",

@@ -48,3 +48,9 @@ Thumbs.db
 *.mov
 *.wmv
 
+/.dart_tool/
+/build/
+/ios/Pods/
+/ios/.symlinks/
+.flutter-plugins
+.flutter-plugins-dependencies

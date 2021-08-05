@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:cuore/profile/app.dart';
+import 'package:cuore/repository/home_repository.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/repository/sheet.dart';
 import 'package:cuore/screen/add_customer.dart';
@@ -44,6 +46,14 @@ class CustomerData {
     // print(box);
     // print('DuongTuan: $place $station');
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'place': place,
+      'station': station,
+    };
+  }
 }
 
 class _WhatsAppHomeState extends State<HomeScreen>
@@ -51,6 +61,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
   TabController? _tabController;
   List<CustomerData> _customerList = [];
   List<String>? _failedMessages;
+
+  final homeRepository = HomeRepository();
 
   TextEditingController _textEditingController = new TextEditingController();
 
@@ -134,7 +146,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
             builder: (context) => AddNewCustomer(_customerList),
           ));
         },
-        label:  Text(
+        label: Text(
           AppLocalizations.of(context)!.add,
           style: TextStyle(color: Colors.white),
         ),
@@ -244,14 +256,13 @@ class _WhatsAppHomeState extends State<HomeScreen>
           OutlineButton(
               child: Text(AppLocalizations.of(context)!.resend),
               onPressed: () async {
-                if(_isButtonTapped == true){
+                if (_isButtonTapped == true) {
                   return;
                 }
 
                 _isButtonTapped = true;
 
-                int result =
-                    await (HelperFunction().sendSms(message));
+                int result = await (HelperFunction().sendSms(message));
 
                 var isNetworkConnected =
                     await HelperFunction().checkDeviceNetwork();
@@ -260,48 +271,53 @@ class _WhatsAppHomeState extends State<HomeScreen>
 
                 if (result != 200 || !isNetworkConnected) {
                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) => new CupertinoAlertDialog(
-                      title: Text(AppLocalizations.of(context)!.resend_error),
-                      content:
-                          Text(AppLocalizations.of(context)!.resend_again),
-                      actions: [
-                        CupertinoDialogAction(
-                          isDefaultAction: true,
-                          child: Text(AppLocalizations.of(context)!.ok),
-                          onPressed: () async {
-                            Navigator.of(context).pop(false);
-                          },
-                        ),
-                        CupertinoDialogAction(
-                          child: Text(AppLocalizations.of(context)!.resend_by_sms),
-                          onPressed: () async {
-                            var address = "+1 619 357 4294";
-                            // sendSms(address, text);
-                            List<String> addresses = [address];
+                      context: context,
+                      builder: (BuildContext context) =>
+                          new CupertinoAlertDialog(
+                            title: Text(
+                                AppLocalizations.of(context)!.resend_error),
+                            content: Text(
+                                AppLocalizations.of(context)!.resend_again),
+                            actions: [
+                              CupertinoDialogAction(
+                                isDefaultAction: true,
+                                child: Text(AppLocalizations.of(context)!.ok),
+                                onPressed: () async {
+                                  Navigator.of(context).pop(false);
+                                },
+                              ),
+                              CupertinoDialogAction(
+                                child: Text(AppLocalizations.of(context)!
+                                    .resend_by_sms),
+                                onPressed: () async {
+                                  var address = "+1 619 357 4294";
+                                  // sendSms(address, text);
+                                  List<String> addresses = [address];
 
-                            _sendSMS(message, addresses);
-                          },
-                        )
-                      ],
-                    ), barrierDismissible: false
-                  );
+                                  _sendSMS(message, addresses);
+                                },
+                              )
+                            ],
+                          ),
+                      barrierDismissible: false);
                 } else {
                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) => new CupertinoAlertDialog(
-                      title: Text(AppLocalizations.of(context)!.message_sent),
-                      actions: [
-                        CupertinoDialogAction(
-                          isDefaultAction: true,
-                          child: Text(AppLocalizations.of(context)!.ok),
-                          onPressed: () async {
-                            Navigator.of(context).pop(false);
-                          },
-                        )
-                      ],
-                    ), barrierDismissible: false
-                  );
+                      context: context,
+                      builder: (BuildContext context) =>
+                          new CupertinoAlertDialog(
+                            title: Text(
+                                AppLocalizations.of(context)!.message_sent),
+                            actions: [
+                              CupertinoDialogAction(
+                                isDefaultAction: true,
+                                child: Text(AppLocalizations.of(context)!.ok),
+                                onPressed: () async {
+                                  Navigator.of(context).pop(false);
+                                },
+                              )
+                            ],
+                          ),
+                      barrierDismissible: false);
 
                   dynamic updatedFailedMessages = _failedMessages!.where((e) {
                     return e != message;
@@ -493,7 +509,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
         IconButton(
           icon: Icon(Icons.cached),
           onPressed: () {
-            final snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.reloading));
+            final snackBar = SnackBar(
+                content: Text(AppLocalizations.of(context)!.reloading));
             _scaffoldKey.currentState!.showSnackBar(snackBar);
             reloadAndSave();
           },
@@ -528,9 +545,9 @@ class _WhatsAppHomeState extends State<HomeScreen>
   final TextEditingController _mainInputController =
       new TextEditingController();
 
-  String? _selectedVillage;
-  String? _selectedStation;
-  String? _searchText;
+  String _selectedVillage = 'ALL';
+  String _selectedStation = 'ALL';
+  String _searchText = '';
 
   Widget _inputLine() {
     if (_customerList.length <= 0) {
@@ -541,14 +558,16 @@ class _WhatsAppHomeState extends State<HomeScreen>
     List<String> _customerStation = [];
 
     _customerVillages = LinkedHashSet<String>.from(_customerList
-        .where((element) => (element.place?.isNotEmpty ?? false))
-        .map((e) => e.place)
-        .toList()).toList();
+            .where((element) => (element.place?.isNotEmpty ?? false))
+            .map((e) => e.place)
+            .toList())
+        .toList();
 
     _customerStation = LinkedHashSet<String>.from(_customerList
-        .where((element) => (element.station?.isNotEmpty ?? false))
-        .map((e) => e.station?.toUpperCase())
-        .toList()).toList();
+            .where((element) => (element.station?.isNotEmpty ?? false))
+            .map((e) => e.station?.toUpperCase())
+            .toList())
+        .toList();
 
     // _customerVillages.forEach((element) {print(element);});
 
@@ -557,7 +576,8 @@ class _WhatsAppHomeState extends State<HomeScreen>
         Padding(
             padding: new EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: TextField(
-              decoration: InputDecoration(hintText: AppLocalizations.of(context)!.search),
+              decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.search),
               controller: _mainInputController,
               onChanged: _handleMainInputChanged,
             )),
@@ -577,13 +597,14 @@ class _WhatsAppHomeState extends State<HomeScreen>
                   child: DropdownButton<String>(
                     icon: Icon(Icons.filter_alt_rounded),
                     elevation: 10,
-                    hint: Text(_selectedVillage != null
-                        ? _selectedVillage!
+                    hint: Text(_selectedVillage != 'ALL'
+                        ? _selectedVillage
                         : AppLocalizations.of(context)!.choose_an_option),
                     items: [
                       DropdownMenuItem<String>(
                         value: 'ALL',
-                        child: new Text(AppLocalizations.of(context)!.all_villages),
+                        child: new Text(
+                            AppLocalizations.of(context)!.all_villages),
                       ),
                       ...(_customerVillages.map((village) {
                         return new DropdownMenuItem<String>(
@@ -613,18 +634,19 @@ class _WhatsAppHomeState extends State<HomeScreen>
                   child: DropdownButton<String>(
                     icon: Icon(Icons.filter_alt_rounded),
                     elevation: 10,
-                    hint: Text(_selectedStation != null
-                        ? _selectedStation!
+                    hint: Text(_selectedStation != 'ALL'
+                        ? _selectedStation
                         : AppLocalizations.of(context)!.choose_an_option),
                     items: [
                       DropdownMenuItem<String>(
                         value: 'ALL',
-                        child: new Text(AppLocalizations.of(context)!.all_stations),
+                        child: new Text(
+                            AppLocalizations.of(context)!.all_stations),
                       ),
-                      ...(_customerStation.map((village) {
+                      ...(_customerStation.map((station) {
                         return new DropdownMenuItem<String>(
-                          value: village,
-                          child: new Text(village),
+                          value: station,
+                          child: new Text(station),
                         );
                       }).toList())
                     ],
@@ -638,21 +660,9 @@ class _WhatsAppHomeState extends State<HomeScreen>
   }
 
   void _handleMainInputChanged(String text) async {
-    // _mainInputController.text = text;
-    List<CustomerData> searchedList = [];
-
-    for (int i = 0; i < _customerList.length; i++) {
-      var customer = _customerList[i];
-      if (customer.name!.toLowerCase().indexOf(text.toLowerCase()) != -1) {
-        searchedList.add(customer);
-      }
-    }
-    if (text.length == 0 && searchedList.length == 0) {
-      searchedList = _customerList;
-    }
     setState(() {
-      _searchedList = searchedList;
       _searchText = text;
+      _searchedList = filterCustomerList();
     });
   }
 
@@ -725,50 +735,23 @@ class _WhatsAppHomeState extends State<HomeScreen>
   void _handleStationChange(String? value) {
     setState(() {
       _selectedStation = value ?? 'ALL';
-      _searchedList =
-          filterList(_selectedVillage ?? 'ALL', _selectedStation ?? 'ALL');
-    });
-    _searchedList?.forEach((element) {
-      element.log();
+      _searchedList = filterCustomerList();
     });
   }
 
-  List<CustomerData> filterList(String village, String station) {
-    if (village.toUpperCase() == 'ALL' && station.toUpperCase() == 'ALL') {
-      return _customerList;
-    }
-
-    if (village.toUpperCase() == 'ALL' && station.toUpperCase() != 'ALL') {
-      return _customerList
-          .where(
-              (element) => element.station?.toUpperCase() == _selectedStation)
-          .toList();
-    }
-
-    if (village.toUpperCase() != 'ALL' && station.toUpperCase() == 'ALL') {
-      return _customerList
-          .where((element) => element.place?.toUpperCase() == _selectedVillage)
-          .toList();
-    }
-
-    if (village.toUpperCase() != 'ALL' && station.toUpperCase() != 'ALL') {
-      return _customerList
-          .where((element) =>
-              element.place?.toUpperCase() == _selectedVillage &&
-              element.station?.toUpperCase() == _selectedStation)
-          .toList();
-    }
-    return [];
+  List<CustomerData> filterCustomerList() {
+    return _customerList.where((customer) {
+      return ( _selectedVillage.toUpperCase() != 'ALL' ? customer.place?.toUpperCase() == _selectedVillage: true)
+          && (_selectedStation.toUpperCase() != 'ALL' ? customer.station?.toUpperCase() == _selectedStation : true )
+        && (_searchText != '' ? customer.name!.toUpperCase().indexOf(_searchText.toUpperCase()) != -1 : true)
+      ;
+    }).toList();
   }
 
   void _handleVillageChanged(String? village) async {
     setState(() {
       _selectedVillage = village ?? 'ALL';
-      _searchedList =
-          filterList(_selectedVillage ?? 'ALL', _selectedStation ?? 'ALL');
-      _searchedList?.forEach((element) {
-        element.log();
-      });
+      _searchedList = filterCustomerList();
     });
   }
 }

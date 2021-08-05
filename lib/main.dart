@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:cuore/generated/l10n.dart';
 import 'package:cuore/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyHomePage(title: 'CUORE'));
@@ -51,6 +55,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Platform.localeName;
+
+    String locale_code = 'en';
+
+    if(locale.substring(0,2).toString() != 'en'){
+      locale_code =  'es';
+    }
+
     return new MaterialApp(
       // localizationsDelegates: [
       //   const SLMessageDelegate(),
@@ -107,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           textTheme:
               TextTheme(title: TextStyle(color: Colors.black, fontSize: 16))),
       debugShowCheckedModeBanner: false,
-      locale: const Locale('es'),
+      locale: new Locale(locale_code),
       home: HomeScreen(),
       // home: new CureGoHome(),
     );
