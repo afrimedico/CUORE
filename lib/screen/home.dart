@@ -742,7 +742,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
   List<CustomerData> filterCustomerList() {
     return _customerList.where((customer) {
       return ( _selectedVillage.toUpperCase() != 'ALL' ? customer.place?.toUpperCase() == _selectedVillage: true)
-          && (_selectedStation.toUpperCase() != 'ALL' ? customer.station?.toUpperCase() == _selectedStation : true )
+          && (_selectedStation.toUpperCase() != 'ALL' ? (customer.station?.toUpperCase() == _selectedStation && customer.station?.toUpperCase() != null ) : true )
         && (_searchText != '' ? customer.name!.toUpperCase().indexOf(_searchText.toUpperCase()) != -1 : true)
       ;
     }).toList();

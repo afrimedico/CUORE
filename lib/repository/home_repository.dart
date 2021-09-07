@@ -52,6 +52,18 @@ class HomeRepository {
     }
   }
 
+  String getWithoutSpaces(String s){
+    String tmp = s.substring(1,s.length-1);
+    while(tmp.startsWith(' ')){
+      tmp = tmp.substring(1);
+    }
+    while(tmp.endsWith(' ')){
+      tmp = tmp.substring(0,tmp.length-1);
+    }
+
+    return tmp;
+  }
+
   Future<MasterData> readPlayerData() async {
     try {
       final file = await _localFile;
@@ -67,7 +79,7 @@ class HomeRepository {
     // return fileText;
   }
 
-  void addNewCustommer(name,place,station,context) async {
+  void addNewCustomer(name,place,station,context) async {
     var user = await App.getProfile();
     
     if (user['name'] != null) {
@@ -80,7 +92,7 @@ class HomeRepository {
 
     CustomerData? newCustomer;
 
-    newCustomer = CustomerData(place: place, name: name, station: station);
+    newCustomer = CustomerData(place: place.trim(), name: name.trim(), station: station.trim());
 
     items.forEach((k,item){
         var otc = OtcData(

@@ -50,6 +50,9 @@ class AddNewCustomer extends StatelessWidget {
                   AppLocalizations.of(context)!.user_name,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
+                SizedBox(
+                  width: 5,
+                ),
                 Expanded(
                     child: TextFormField(
                   controller: nameController,
@@ -61,6 +64,9 @@ class AddNewCustomer extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.village,
                   style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                SizedBox(
+                  width: 5,
                 ),
                 Expanded(
                   child: TextFormField(
@@ -86,6 +92,9 @@ class AddNewCustomer extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.station,
                   style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                SizedBox(
+                  width: 5,
                 ),
                 Expanded(
                   child: TextFormField(
@@ -123,7 +132,10 @@ class AddNewCustomer extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                homeRepository.addNewCustommer(nameController.text,villageController.text,stationController.text,context);
+                if(nameController.text != '' && stationController.text != ''){
+                  homeRepository.addNewCustomer(nameController.text,villageController.text ?? '',stationController.text,context);
+                }
+
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
