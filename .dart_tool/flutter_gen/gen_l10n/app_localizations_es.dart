@@ -1,9 +1,7 @@
 
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
-import 'app_localizations.dart';
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+
+import 'app_localizations.dart';
 
 /// The translations for Spanish Castilian (`es`).
 class AppLocalizationsEs extends AppLocalizations {
@@ -73,50 +71,50 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sheet => 'karatasi';
 
   @override
-  String get resend => 'resend';
+  String get resend => 'Tuma tena';
 
   @override
-  String get ok => 'ok';
+  String get ok => 'sawa';
 
   @override
-  String get all => 'All';
+  String get all => 'Vyote';
 
   @override
-  String get box => 'Box';
+  String get box => 'Sanduku';
 
   @override
-  String get station => 'Station';
+  String get station => 'Kituo';
 
   @override
-  String get ringup_use => 'use';
+  String get ringup_use => 'tumia';
 
   @override
-  String get customer_count => 'Count';
+  String get customer_count => 'Hesabu';
 
   @override
-  String get resend_by_sms => 'Resend by SMS';
+  String get resend_by_sms => 'Tuma tena kwa SMS';
 
   @override
-  String get resend_again => 'Please send again when your network works. ';
+  String get resend_again => 'Tafadhali tuma tena mtandao Wako unapopatikana. ';
 
   @override
-  String get resend_error => 'Some messages cant be sent properly. ';
+  String get resend_error => 'Ujumbe haukutumwa vizuri. ';
 
   @override
-  String get message_sent => 'Message sent';
+  String get message_sent => 'ÅgUjumbe umetumwa';
 
   @override
-  String get failed_messages => 'Failed Messages';
+  String get failed_messages => 'Ujumbe ulioshindwa';
 
   @override
-  String get processing => 'Processing...';
+  String get processing => 'Usindikaji...';
 
   @override
-  String get all_villages => 'All villages';
+  String get all_villages => 'Vijiji vyote';
 
   @override
-  String get all_stations => 'All stations';
+  String get all_stations => 'Vituo vyote';
 
   @override
-  String get reloading => 'Reloading...';
+  String get reloading => 'Inapakia upya...';
 }

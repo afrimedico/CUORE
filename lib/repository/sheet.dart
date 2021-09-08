@@ -12,8 +12,9 @@ class CustomerDb {
   static Future<void> saveAsSheets(List<CustomerData?> list) async {
     var data = <Map<String, dynamic>>[];
     for (var row in list) {
+      print(row!.station);
       data.add({
-        "PLACE": row!.place,
+        "PLACE": row.place,
         "CLIENT NAME": row.name,
         "station": row.station,
         "Key": 'updated',
@@ -56,14 +57,13 @@ class CustomerDb {
     List<CustomerData> result = <CustomerData>[];
     CustomerData? user;
     for (var row in sheet?.values.last) {
-      var place = row['PLACE'];
-      var client = row['CLIENT NAME'];
-      var station = row['station'];
+      var place = row['PLACE']?.toUpperCase();
+      var client = row['CLIENT NAME']?.toUpperCase();
+      var station = row['station']?.toUpperCase();
       var key = row['Key'];
       var value = row['Value'];
       if (client.length > 0) {
         if (user != null) {
-          user.station = station;
           result.add(user);
         }
         user = CustomerData(place: place, name: client, station: station);
