@@ -8,6 +8,7 @@ import 'package:cuore/profile/app.dart';
 import 'package:cuore/repository/otc.dart';
 import 'package:cuore/repository/sheet.dart';
 import 'package:cuore/screen/home.dart';
+import 'package:cuore/sl/helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -111,12 +112,18 @@ class HomeRepository {
 
     this._customerList.add(newCustomer);
 
-    await CustomerDb.saveAsSheets(this._customerList);
+    String msg = 'Customer,' + name.trim() + ',' + place.trim() + ',' + station.trim();
 
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen()),
-            (Route<dynamic> route) => false);
+    int result = await (HelperFunction().sendSms(msg));
+
+    if(result == 200){
+      await CustomerDb.saveAsSheets(this._customerList);
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => HomeScreen()),
+              (Route<dynamic> route) => false);
+    }
   }
 }

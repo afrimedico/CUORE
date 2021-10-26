@@ -132,8 +132,8 @@ class AddNewCustomer extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                if(nameController.text != '' && stationController.text != ''){
-                  homeRepository.addNewCustomer(nameController.text,villageController.text ?? '',stationController.text,context);
+                if(nameController.text != '' && villageController.text != ''){
+                  homeRepository.addNewCustomer(nameController.text,villageController.text,stationController.text ?? '',context);
                 }
 
               },
