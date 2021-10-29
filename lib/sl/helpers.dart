@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 class HelperFunction {
   Future sendSms(String text) async {
-    print(text);
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
