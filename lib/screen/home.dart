@@ -16,7 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../l10n/app_localizations.dart';
 
 /// Show customers list.
 class HomeScreen extends StatefulWidget {
@@ -181,10 +182,10 @@ class _WhatsAppHomeState extends State<HomeScreen>
             autofocus: false,
             keyboardType: TextInputType.text,
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text(AppLocalizations.of(context)!.save),
-            color: Colors.orange,
-            textColor: Colors.white,
+            // color: Colors.orange,
+            // textColor: Colors.white,
             onPressed: () async {
               setState(() {
                 userName = _textEditingController.text;
@@ -253,7 +254,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
         padding: EdgeInsets.all(10),
         child: Column(children: [
           Text(message),
-          OutlineButton(
+          OutlinedButton(
               child: Text(AppLocalizations.of(context)!.resend),
               onPressed: () async {
                 if (_isButtonTapped == true) {
@@ -511,7 +512,7 @@ class _WhatsAppHomeState extends State<HomeScreen>
           onPressed: () {
             final snackBar = SnackBar(
                 content: Text(AppLocalizations.of(context)!.reloading));
-            _scaffoldKey.currentState!.showSnackBar(snackBar);
+            // _scaffoldKey.currentState!.showSnackBar(snackBar);
             reloadAndSave();
           },
         ),
@@ -679,12 +680,12 @@ class _WhatsAppHomeState extends State<HomeScreen>
       padding: new EdgeInsets.all(4.0),
       child: new Container(
         decoration: new BoxDecoration(color: Colors.yellowAccent),
-        child: OutlineButton(
+        child: OutlinedButton(
           onPressed: () {
             _onTap(i);
           },
-          padding:
-              EdgeInsets.only(top: 4.0, right: 4.0, bottom: 0.0, left: 4.0),
+          // padding:
+          //     EdgeInsets.only(top: 4.0, right: 4.0, bottom: 0.0, left: 4.0),
           child: new Column(
             children: <Widget>[
               new ListTile(

@@ -5,7 +5,7 @@ import 'package:cuore/screen/otclist2.dart';
 import 'package:cuore/screen/ringup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Show Otc list which customer has.
 class OtcListScreen extends StatefulWidget {
@@ -182,8 +182,8 @@ class OtcListState extends State<OtcListScreen>
                 : otc.count > otc.base
                     ? Colors.lightBlueAccent
                     : Colors.white)),
-        child: OutlineButton(
-          padding: EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
+        child: OutlinedButton(
+          // padding: EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

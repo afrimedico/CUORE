@@ -120,11 +120,11 @@ class _OtcState extends State<OtcScreen> with SingleTickerProviderStateMixin {
     return Flexible(
       child: Padding(
         padding: EdgeInsets.all(4.0),
-        child: OutlineButton(
-          borderSide: BorderSide(width: 1.0, color: Colors.grey),
-          shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(10.0)),
-          padding: new EdgeInsets.all(10.0),
+        child: OutlinedButton(
+          // borderSide: BorderSide(width: 1.0, color: Colors.grey),
+          // shape: new RoundedRectangleBorder(
+          //     borderRadius: new BorderRadius.circular(10.0)),
+          // padding: new EdgeInsets.all(10.0),
           child: new TextField(
             keyboardType: TextInputType.number,
             controller: textController,

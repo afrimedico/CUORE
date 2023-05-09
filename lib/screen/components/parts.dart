@@ -1,7 +1,7 @@
 import 'package:cuore/repository/otc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 class Parts {
   static final Parts _instance = Parts._internal();
@@ -25,9 +25,9 @@ class Parts {
             Flexible(
               fit: FlexFit.tight,
               flex: 2,
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: onScan,
-                color: Colors.blue,
+                // color: Colors.blue,
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -57,9 +57,9 @@ class Parts {
   Widget newResultItem(OtcData otc) {
     return Padding(
         padding: new EdgeInsets.all(4.0),
-        child: OutlineButton(
-          padding:
-              EdgeInsets.only(top: 4.0, right: 4.0, bottom: 0.0, left: 4.0),
+        child: OutlinedButton(
+          // padding:
+          //     EdgeInsets.only(top: 4.0, right: 4.0, bottom: 0.0, left: 4.0),
           child: Column(
             children: [
               ListTile(
@@ -133,9 +133,9 @@ class Parts {
           Flexible(
             fit: FlexFit.tight,
             flex: 1,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: onBack,
-              color: Colors.grey,
+              // color: Colors.grey,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -159,9 +159,9 @@ class Parts {
           Flexible(
             fit: FlexFit.tight,
             flex: 2,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: onDone,
-              color: Colors.pink,
+              // color: Colors.pink,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -198,9 +198,9 @@ class Parts {
           Flexible(
             fit: FlexFit.tight,
             flex: 2,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: onDone,
-              color: bgColor ??  Colors.pink,
+              // color: bgColor ??  Colors.pink,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

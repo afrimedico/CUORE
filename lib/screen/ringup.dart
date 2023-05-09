@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Show Ring up.
 class RingupScreen extends StatefulWidget {
@@ -100,8 +100,8 @@ class _RingupState extends State<RingupScreen>
     }
     return Padding(
       padding: new EdgeInsets.all(4.0),
-      child: OutlineButton(
-        padding: EdgeInsets.only(top: 4.0, right: 4.0, bottom: 0.0, left: 4.0),
+      child: OutlinedButton(
+        // padding: EdgeInsets.only(top: 4.0, right: 4.0, bottom: 0.0, left: 4.0),
         child: new Column(
           children: <Widget>[
             new ListTile(
@@ -342,11 +342,11 @@ class _RingupState extends State<RingupScreen>
     return Flexible(
       child: Padding(
         padding: EdgeInsets.all(4.0),
-        child: OutlineButton(
-          borderSide: BorderSide(width: 1.0, color: Colors.grey),
-          shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(10.0)),
-          padding: new EdgeInsets.all(10.0),
+        child: OutlinedButton(
+          // borderSide: BorderSide(width: 1.0, color: Colors.grey),
+          // shape: new RoundedRectangleBorder(
+          //     borderRadius: new BorderRadius.circular(10.0)),
+          // padding: new EdgeInsets.all(10.0),
           child: new TextField(
             keyboardType: TextInputType.number,
             controller: _textController,
@@ -434,11 +434,11 @@ class _RingupState extends State<RingupScreen>
           Flexible(
             fit: FlexFit.tight,
             flex: 1,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () async {
                 Navigator.pop(context, false);
               },
-              color: Colors.grey,
+              // color: Colors.grey,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -462,13 +462,13 @@ class _RingupState extends State<RingupScreen>
           Flexible(
             fit: FlexFit.tight,
             flex: 2,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () {
                 if (collection != -1 && _isButtonTapped == false) {
                   return _showConfirmCustomerDialog();
                 }
               },
-              color: (collection != -1) ? Colors.blue : Colors.white,
+              // color: (collection != -1) ? Colors.blue : Colors.white,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

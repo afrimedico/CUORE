@@ -5,7 +5,7 @@ import 'package:cuore/screen/ringup.dart';
 // import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 /// Show Otc list which customer has.
 class OtcListScreen2 extends StatefulWidget {
@@ -175,8 +175,8 @@ class OtcListState2 extends State<OtcListScreen2>
       child: new Container(
         decoration: new BoxDecoration(
             color: (otc.add > 0 ? Colors.greenAccent : Colors.white)),
-        child: OutlineButton(
-          padding: EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
+        child: OutlinedButton(
+          // padding: EdgeInsets.only(top: 5, right: 0.0, bottom: 5, left: 0.0),
           child: new Column(
             children: <Widget>[
               new ListTile(

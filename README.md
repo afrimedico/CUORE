@@ -1,29 +1,25 @@
-# README #
+# flutterapp
 
-This README would normally document whatever steps are necessary to get your application up and running.
+A new Flutter application.
 
-### What is this repository for? ###
+## Getting Started
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Flutter Gen install
+https://pub.dev/packages/flutter_gen
 
-### How do I get set up? ###
+### for windows
+dart pub global activate flutter_gen
+flutter pub get
+flutter packages pub run build_runner build
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
 
-### Contribution guidelines ###
+This project is a starting point for a Flutter application.
 
-* Writing tests
-* Code review
-* Other guidelines
+A few resources to get you started if this is your first Flutter project:
 
-### Who do I talk to? ###
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-* Repo owner or admin
-* Other community or team contact
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
